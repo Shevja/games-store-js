@@ -1,5 +1,5 @@
 const API_BASE = "https://api.xbox-rent.ru/api-sale";
-const itemsPerPage = 12;
+const itemsPerPage = 1;
 
 // Глобальные переменные
 let allProducts = []; // Все товары для поиска
