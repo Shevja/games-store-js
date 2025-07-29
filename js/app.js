@@ -1,7 +1,4 @@
-const API_BASE = {
-    GAMES: "https://api.xbox-rent.ru/api-sale",
-    DLC: "https://api.xbox-rent.ru" // Без /api-sale для DLC
-};
+const API_BASE = "https://api.xbox-rent.ru/api-sale";
 const itemsPerPage = 1;
 
 // Глобальные переменные
@@ -39,16 +36,20 @@ async function loadAllProducts() {
     try {
         showLoader();
 
-        // Загружаем все игры и дополнения
-        const [gamesRes, dlcRes] = await Promise.all([
-            fetch(`${API_BASE.GAMES}/games/sales/?limit=1000`),
-            fetch(`${API_BASE.DLC}/games/dlc/?limit=1000`)
-        ]);
-
+        // Загружаем игры с пагинацией
+        const gamesRes = await fetch(`${API_BASE}/games/sales/?limit=1000`);
         const gamesData = await gamesRes.json();
-        const dlcData = await dlcRes.json();
 
-        // Сохраняем все товары с указанием типа
+        // Загружаем DLC (без пагинации, так как endpoint возвращает случайные)
+        const dlcRes = await fetch(`${API_BASE}/games/dlc`);
+        let dlcData = await dlcRes.json();
+
+        // Если DLC возвращаются не в формате {results: [...]}, преобразуем
+        if (!Array.isArray(dlcData)) {
+            dlcData = { results: [] }; // или другой обработчик согласно API
+        }
+
+        // Сохраняем все товары
         allProducts = [
             ...(gamesData.results || []).map(item => ({...item, type: 'games' })),
             ...(dlcData.results || []).map(item => ({...item, type: 'dlc' }))
@@ -58,11 +59,15 @@ async function loadAllProducts() {
         gamesCountEl.textContent = (gamesData.results || []).length;
         dlcCountEl.textContent = (dlcData.results || []).length;
 
-        // Первоначальная загрузка
         filterProducts();
     } catch (error) {
-        console.error("Ошибка загрузки всех товаров:", error);
-        container.innerHTML = `<p>Ошибка загрузки данных: ${error.message}</p>`;
+        console.error("Ошибка загрузки:", error);
+        container.innerHTML = `
+            <div class="error">
+                <p>Не удалось загрузить товары. Попробуйте позже.</p>
+                <button onclick="location.reload()">Обновить</button>
+            </div>
+        `;
     }
 }
 
@@ -97,14 +102,21 @@ function setupEventListeners() {
         renderProducts();
     });
 
-    dlcBtn.addEventListener("click", () => {
+    dlcBtn.addEventListener("click", async() => {
         currentType = 'dlc';
         currentPage = 1;
         currentSearchQuery = '';
         searchInput.value = '';
         updateActiveTab();
-        filterProducts();
-        renderProducts();
+
+        try {
+            const res = await fetch(`${API_BASE}/games/dlc`);
+            const data = await res.json();
+            filteredProducts = Array.isArray(data) ? data : (data.results || []);
+            renderProducts();
+        } catch (error) {
+            console.error("DLC load error:", error);
+        }
     });
 
     // Поиск
@@ -135,21 +147,26 @@ function updateActiveTab() {
 function setupSearch() {
     let searchTimer;
 
-    searchInput.addEventListener("input", e => {
+    searchInput.addEventListener("input", async(e) => {
         clearTimeout(searchTimer);
-        currentSearchQuery = e.target.value.trim();
+        const query = e.target.value.trim();
+        currentSearchQuery = query;
 
-        searchTimer = setTimeout(() => {
-            currentPage = 1;
-            filterProducts();
-            renderProducts();
+        searchTimer = setTimeout(async() => {
+            if (query.length >= 3) {
+                try {
+                    const res = await fetch(`${API_BASE}/games/search/${encodeURIComponent(query)}`);
+                    const data = await res.json();
+                    filteredProducts = data.results || [];
+                    renderProducts();
+                } catch (error) {
+                    console.error("Search error:", error);
+                }
+            } else {
+                filterProducts();
+                renderProducts();
+            }
         }, 500);
-    });
-
-    document.getElementById("searchBtn").addEventListener("click", () => {
-        currentPage = 1;
-        filterProducts();
-        renderProducts();
     });
 }
 
