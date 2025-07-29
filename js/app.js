@@ -1,24 +1,17 @@
-// ======================
-// КОНФИГУРАЦИЯ И ПЕРЕМЕННЫЕ
-// ======================
 const API_BASE = "http://51.250.47.210:8085/api-sale";
 const itemsPerPage = 12;
 
-// Глобальные переменные состояния
-let allGames = []; // Все игры для поиска
-let allDLC = []; // Все дополнения для поиска
-let products = [];
+// Глобальные переменные
+let allProducts = []; // Все товары для поиска
+let filteredProducts = []; // Отфильтрованные товары
 let cart = [];
-let gamesCount = 0;
-let dlcCount = 0;
 let currentPage = 1;
 let currentView = 'grid';
 let currentType = 'games';
 let currentSearchQuery = '';
 let isLoading = false;
-// ======================
-// DOM ЭЛЕМЕНТЫ
-// ======================
+
+// DOM элементы
 const container = document.getElementById("productsContainer");
 const modal = document.getElementById("modal");
 const modalBody = document.getElementById("modalBody");
@@ -29,18 +22,21 @@ const cartTotal = document.getElementById("cartTotal");
 const pageInfo = document.getElementById("pageInfo");
 const gamesBtn = document.getElementById("gamesBtn");
 const dlcBtn = document.getElementById("dlcBtn");
+const gamesCountEl = document.getElementById("gamesCount");
+const dlcCountEl = document.getElementById("dlcCount");
+const searchInput = document.getElementById("searchInput");
 
-// ======================
-// ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ
-// ======================
+// Инициализация приложения
 document.addEventListener("DOMContentLoaded", async() => {
-    await loadAllProducts(); // Загружаем все товары для поиска
+    await loadAllProducts();
     initApp();
 });
 
 async function loadAllProducts() {
     try {
-        // Загружаем все игры и дополнения один раз
+        showLoader();
+
+        // Загружаем все игры и дополнения
         const [gamesRes, dlcRes] = await Promise.all([
             fetch(`${API_BASE}/games/sales/?limit=1000`),
             fetch(`${API_BASE}/games/dlc/?limit=1000`)
@@ -49,44 +45,63 @@ async function loadAllProducts() {
         const gamesData = await gamesRes.json();
         const dlcData = await dlcRes.json();
 
-        allGames = gamesData.results || [];
-        allDLC = dlcData.results || [];
+        // Сохраняем все товары с указанием типа
+        allProducts = [
+            ...(gamesData.results || []).map(item => ({...item, type: 'games' })),
+            ...(dlcData.results || []).map(item => ({...item, type: 'dlc' }))
+        ];
 
-        gamesCount = allGames.length;
-        dlcCount = allDLC.length;
+        // Обновляем счетчики
+        gamesCountEl.textContent = (gamesData.results || []).length;
+        dlcCountEl.textContent = (dlcData.results || []).length;
 
-        document.getElementById("gamesCount").textContent = gamesCount;
-        document.getElementById("dlcCount").textContent = dlcCount;
+        // Первоначальная загрузка
+        filterProducts();
     } catch (error) {
         console.error("Ошибка загрузки всех товаров:", error);
+        container.innerHTML = `<p>Ошибка загрузки данных: ${error.message}</p>`;
     }
 }
 
 function initApp() {
-    loadProducts(currentType);
+    updateActiveTab();
+    renderProducts();
     setupEventListeners();
 }
-// ======================
-// НАСТРОЙКА ОБРАБОТЧИКОВ СОБЫТИЙ
-// ======================
+
+// Фильтрация товаров по текущему типу и поисковому запросу
+function filterProducts() {
+    filteredProducts = allProducts.filter(product => {
+        const matchesType = product.type === currentType;
+        const matchesSearch = currentSearchQuery.length < 3 ||
+            (product.title && product.title.toLowerCase().includes(currentSearchQuery.toLowerCase()));
+        return matchesType && matchesSearch;
+    });
+
+    updatePagination(filteredProducts.length);
+}
+
+// Настройка обработчиков событий
 function setupEventListeners() {
     // Переключатель игр/дополнений
     gamesBtn.addEventListener("click", () => {
         currentType = 'games';
         currentPage = 1;
         currentSearchQuery = '';
-        document.getElementById("searchInput").value = '';
+        searchInput.value = '';
         updateActiveTab();
-        loadProducts(currentType);
+        filterProducts();
+        renderProducts();
     });
 
     dlcBtn.addEventListener("click", () => {
         currentType = 'dlc';
         currentPage = 1;
         currentSearchQuery = '';
-        document.getElementById("searchInput").value = '';
+        searchInput.value = '';
         updateActiveTab();
-        loadProducts(currentType);
+        filterProducts();
+        renderProducts();
     });
 
     // Поиск
@@ -113,133 +128,50 @@ function updateActiveTab() {
     dlcBtn.classList.toggle('active', currentType === 'dlc');
 }
 
-// ======================
-// ПОИСК И ФИЛЬТРАЦИЯ
-// ======================
+// Поиск товаров
 function setupSearch() {
     let searchTimer;
-    const searchInput = document.getElementById("searchInput");
 
     searchInput.addEventListener("input", e => {
         clearTimeout(searchTimer);
         currentSearchQuery = e.target.value.trim();
 
         searchTimer = setTimeout(() => {
-            if (currentSearchQuery.length >= 3) {
-                currentPage = 1;
-                searchProducts(currentSearchQuery);
-            } else if (currentSearchQuery.length === 0) {
-                currentPage = 1;
-                loadProducts(currentType);
-            }
+            currentPage = 1;
+            filterProducts();
+            renderProducts();
         }, 500);
     });
 
     document.getElementById("searchBtn").addEventListener("click", () => {
-        if (currentSearchQuery.length >= 3) {
-            currentPage = 1;
-            searchProducts(currentSearchQuery);
-        }
+        currentPage = 1;
+        filterProducts();
+        renderProducts();
     });
 }
 
-function searchProducts(query) {
-    if (query.length < 3) return;
-
-    showLoader();
-
-    try {
-        // Ищем в соответствующих данных (игры или дополнения)
-        const searchData = currentType === 'games' ? allGames : allDLC;
-
-        // Фильтруем по заголовку (регистронезависимо)
-        products = searchData.filter(item =>
-            item.title && item.title.toLowerCase().includes(query.toLowerCase())
-        );
-
-        // Пагинация
-        const paginatedProducts = products.slice(
-            (currentPage - 1) * itemsPerPage,
-            currentPage * itemsPerPage
-        );
-
-        if (paginatedProducts.length === 0) {
-            container.innerHTML = `<p>По запросу "${query}" ничего не найдено</p>`;
-        } else {
-            renderProducts(paginatedProducts);
-        }
-
-        updatePagination(products.length);
-    } catch (error) {
-        console.error("Ошибка поиска:", error);
-        container.innerHTML = `<p>Ошибка поиска: ${error.message}</p>`;
-    }
-}
-
-// ======================
-// ЗАГРУЗКА ДАННЫХ
-// ======================
-async function loadProducts(type = "games") {
+// Отображение товаров
+function renderProducts() {
     if (isLoading) return;
-    isLoading = true;
-    showLoader();
 
-    try {
-        // Используем предзагруженные данные
-        const sourceData = type === 'dlc' ? allDLC : allGames;
-        products = sourceData;
-
-        // Применяем пагинацию
-        const paginatedProducts = products.slice(
-            (currentPage - 1) * itemsPerPage,
-            currentPage * itemsPerPage
-        );
-
-        renderProducts(paginatedProducts);
-        updatePagination(products.length);
-    } catch (error) {
-        console.error("Ошибка загрузки:", error);
-        container.innerHTML = `<p>Ошибка загрузки данных: ${error.message}</p>`;
-    } finally {
-        isLoading = false;
-    }
-}
-
-async function loadCounts() {
-    try {
-        const [gamesRes, dlcRes] = await Promise.all([
-            fetch(`${API_BASE}/games/sales/?limit=1`),
-            fetch(`${API_BASE}/games/dlc?limit=1`)
-        ]);
-
-        const gamesData = await gamesRes.json();
-        const dlcData = await dlcRes.json();
-
-        gamesCount = gamesData.count || 0;
-        dlcCount = dlcData.count || 0;
-
-        document.getElementById("gamesCount").textContent = gamesCount;
-        document.getElementById("dlcCount").textContent = dlcCount;
-    } catch (error) {
-        console.error("Ошибка загрузки счетчиков:", error);
-    }
-}
-
-// ======================
-// ОТОБРАЖЕНИЕ ТОВАРОВ
-// ======================
-function renderProducts(items) {
     container.innerHTML = "";
 
-    if (items.length === 0) {
-        container.innerHTML = "<p>Ничего не найдено</p>";
+    if (filteredProducts.length === 0) {
+        container.innerHTML = currentSearchQuery.length >= 3 ?
+            `<p>По запросу "${currentSearchQuery}" ничего не найдено</p>` :
+            "<p>Ничего не найдено</p>";
         return;
     }
 
     const productsWrapper = document.createElement("div");
     productsWrapper.className = `products-${currentView}`;
 
-    items.forEach(product => {
+    // Применяем пагинацию
+    const startIdx = (currentPage - 1) * itemsPerPage;
+    const endIdx = startIdx + itemsPerPage;
+    const paginatedProducts = filteredProducts.slice(startIdx, endIdx);
+
+    paginatedProducts.forEach(product => {
         const price = getProductPrice(product);
         const card = createProductCard(product, price);
         productsWrapper.appendChild(card);
@@ -308,9 +240,7 @@ function truncateDescription(desc, length = 100) {
     return desc && desc.length > length ? desc.substring(0, length) + '...' : desc;
 }
 
-// ======================
-// ВАРИАНТЫ ОТОБРАЖЕНИЯ
-// ======================
+// Варианты отображения
 function setupViewOptions() {
     document.getElementById("viewCards").addEventListener("click", () => {
         currentView = 'grid';
@@ -332,9 +262,7 @@ function setupViewOptions() {
 }
 
 function updateView() {
-    if (products.length > 0) {
-        renderProducts(products);
-    }
+    renderProducts();
 }
 
 function toggleActiveViewButtons(activeId) {
@@ -348,20 +276,23 @@ function toggleActiveViewButtons(activeId) {
     });
 }
 
-// ======================
-// ПАГИНАЦИЯ
-// ======================
+// Пагинация
 function setupPagination() {
     document.getElementById("prevPage").addEventListener("click", () => {
         if (currentPage > 1) {
             currentPage--;
-            loadPage();
+            renderProducts();
+            updatePagination(filteredProducts.length);
         }
     });
 
     document.getElementById("nextPage").addEventListener("click", () => {
-        currentPage++;
-        loadPage();
+        const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+        if (currentPage < totalPages) {
+            currentPage++;
+            renderProducts();
+            updatePagination(filteredProducts.length);
+        }
     });
 }
 
@@ -375,17 +306,7 @@ function updatePagination(totalItems) {
     nextBtn.disabled = currentPage >= totalPages;
 }
 
-function loadPage() {
-    if (currentSearchQuery.length >= 3) {
-        searchGame(currentSearchQuery);
-    } else {
-        loadProducts(currentType);
-    }
-}
-
-// ======================
-// МОДАЛЬНОЕ ОКНО
-// ======================
+// Модальное окно
 async function showDetails(product) {
     if (isLoading) return;
     isLoading = true;
@@ -480,9 +401,7 @@ function closeModalWindow() {
     modal.classList.remove("active");
 }
 
-// ======================
-// КОРЗИНА
-// ======================
+// Корзина
 function addToCart(id, title, price) {
     cart.push({ id, title, price });
     updateCartUI();
@@ -526,15 +445,11 @@ function checkout() {
     updateCartUI();
 }
 
-// ======================
-// ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
-// ======================
+// Вспомогательные функции
 function showLoader() {
     container.innerHTML = '<div class="loader-container"><div class="loader"></div></div>';
 }
 
-// ======================
-// ГЛОБАЛЬНЫЕ ФУНКЦИИ
-// ======================
+// Глобальные функции
 window.addToCart = addToCart;
 window.removeFromCart = removeFromCart;
