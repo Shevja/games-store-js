@@ -1,4 +1,4 @@
-const API_BASE = "http://51.250.47.210:8085/api-sale";
+const API_BASE = "https://cors-anywhere.herokuapp.com/http://51.250.47.210:8085/api-sale";
 const itemsPerPage = 12;
 
 // Глобальные переменные
