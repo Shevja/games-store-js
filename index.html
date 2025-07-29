@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>XBOX Rent</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+
+<body>
+    <!-- Шапка -->
+    <header>
+        <picture>
+            <source media="(max-width: 768px)" srcset="./img/xbox-preview.webp">
+            <img src="./img/xbox-preview.webp" alt="XBOX Rent Header" class="header-img" />
+        </picture>
+    </header>
+
+    <!-- Поиск и настройки отображения -->
+    <div class="search-settings">
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Поиск игр..." />
+            <button id="searchBtn"><i class="fas fa-search"></i></button>
+        </div>
+
+        <div class="view-options">
+            <button id="viewCards" class="active" title="Карточки"><i class="fas fa-th"></i></button>
+            <button id="viewList" title="Список"><i class="fas fa-list"></i></button>
+            <button id="viewText" title="Текст"><i class="fas fa-align-justify"></i></button>
+        </div>
+    </div>
+
+    <!-- Фильтры -->
+    <div class="filter-buttons">
+        <button id="gamesBtn" class="active">Игры (<span id="gamesCount">0</span>)</button>
+        <button id="dlcBtn">Дополнения (<span id="dlcCount">0</span>)</button>
+    </div>
+
+    <!-- Контейнер карточек -->
+    <main id="productsContainer">
+        <div class="loader-container">
+            <div class="loader"></div>
+        </div>
+    </main>
+
+    <!-- Пагинация -->
+    <div class="pagination">
+        <button id="prevPage" disabled><i class="fas fa-chevron-left"></i></button>
+        <span id="pageInfo">Страница 1</span>
+        <button id="nextPage" disabled><i class="fas fa-chevron-right"></i></button>
+    </div>
+
+    <!-- Корзина -->
+    <div id="cart" class="cart">
+        <div class="cart-header">
+            <h3>Корзина <span id="cartCount">0</span></h3>
+            <button id="clearCart"><i class="fas fa-trash"></i></button>
+        </div>
+        <ul id="cartItems"></ul>
+        <div class="cart-total">
+            Итого: <span id="cartTotal">0</span> ₽
+        </div>
+        <button id="checkoutBtn">Оформить заказ</button>
+    </div>
+
+    <!-- Модальное окно -->
+    <div id="modal" class="modal hidden">
+        <div class="modal-overlay" id="modalOverlay"></div>
+        <div class="modal-content">
+            <span id="closeModal">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script src="./js/app.js"></script>
+</body>
+
+</html>
