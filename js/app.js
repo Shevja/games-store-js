@@ -1,4 +1,7 @@
-const API_BASE = "https://api.xbox-rent.ru/api-sale";
+const API_BASE = {
+    GAMES: "https://api.xbox-rent.ru/api-sale",
+    DLC: "https://api.xbox-rent.ru" // Без /api-sale для DLC
+};
 const itemsPerPage = 1;
 
 // Глобальные переменные
@@ -38,8 +41,8 @@ async function loadAllProducts() {
 
         // Загружаем все игры и дополнения
         const [gamesRes, dlcRes] = await Promise.all([
-            fetch(`${API_BASE}/games/sales/?limit=1000`),
-            fetch(`${API_BASE}/games/dlc/?limit=1000`)
+            fetch(`${API_BASE.GAMES}/games/sales/?limit=1000`),
+            fetch(`${API_BASE.DLC}/games/dlc/?limit=1000`)
         ]);
 
         const gamesData = await gamesRes.json();
