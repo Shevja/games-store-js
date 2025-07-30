@@ -387,22 +387,46 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
     }
     
     // Видео
-    let videosContent = '';
-    if (product.videos && product.videos.length) {
-        videosContent = `
-        <div class="media-section">
-            <h3>Видео</h3>
-            <div class="videos-grid">
-                ${product.videos.map(video => `
-                    <div class="video-wrapper">
-                        <iframe src="${video}" frameborder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen></iframe>
-                    </div>
-                `).join('')}
-            </div>
-        </div>`;
-    }
+  let videosContent = '';
+if (product.videos && product.videos.length) {
+    videosContent = `
+    <div class="media-section">
+        <h3>Видео</h3>
+        <div class="videos-grid">
+            ${product.videos.map((video, index) => {
+                const videoId = `video-${Date.now()}-${index}`;
+                const isHLS = video.endsWith('.m3u8');
+                
+                return `
+                <div class="video-wrapper">
+                    <video id="${videoId}" controls preload="metadata" 
+                        poster="${product.image || 'img/placeholder.jpg'}"
+                        style="width:100%; background:#000;">
+                        ${!isHLS ? `<source src="${video}" type="video/mp4">` : ''}
+                        Ваш браузер не поддерживает видео.
+                    </video>
+                    ${isHLS ? `
+                    <script>
+                        (function() {
+                            const video = document.getElementById('${videoId}');
+                            if(Hls.isSupported()) {
+                                const hls = new Hls();
+                                hls.loadSource('${video}');
+                                hls.attachMedia(video);
+                                video.addEventListener('click', function() {
+                                    video.play().catch(e => console.log('Play error:', e));
+                                });
+                            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                                video.src = '${video}';
+                            }
+                        })();
+                    </script>
+                    ` : ''}
+                </div>`;
+            }).join('')}
+        </div>
+    </div>`;
+}
     
     // Описание с кнопкой "Подробнее"
     const descriptionId = `desc-${Date.now()}`;
@@ -506,10 +530,35 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
         e.preventDefault();
         addToCart(product.product_id, product.title || 'Без названия', keyPrice);
     });
-    
+    initVideoPlayers();
     setupPriceOptionHandlers(product, keyPrice, uAccPrice, newAccPrice);
 }
-
+function initVideoPlayers() {
+    document.querySelectorAll('.video-wrapper video').forEach(video => {
+        const wrapper = video.closest('.video-wrapper');
+        
+        video.addEventListener('play', () => {
+            wrapper.classList.add('playing');
+        });
+        
+        video.addEventListener('pause', () => {
+            wrapper.classList.remove('playing');
+        });
+        
+        video.addEventListener('click', function(e) {
+            if (video.paused) {
+                video.play().catch(e => console.log('Play error:', e));
+            } else {
+                video.pause();
+            }
+        });
+        
+    });
+}
+function canPlayMP4() {
+    const video = document.createElement('video');
+    return !!video.canPlayType('video/mp4; codecs="avc1.42E01E, mp4a.40.2"');
+}
 function initSlider() {
     const slider = document.querySelector('.screenshots-slider');
     const slidesContainer = slider.querySelector('.slides-container');
