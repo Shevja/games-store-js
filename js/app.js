@@ -290,6 +290,15 @@ function setupEventListeners() {
     // Модальное окно
     elements.closeModal.addEventListener("click", closeModalWindow);
     elements.modalOverlay.addEventListener("click", closeModalWindow);
+    elements.container.addEventListener("click", (e) => {
+        const card = e.target.closest(".product-card");
+        if (card && !isLoading) {
+            const index = Array.from(card.parentElement.children).indexOf(card);
+            const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
+            const product = filteredProducts[startIdx + index];
+            showDetails(product);
+        }
+    });
 }
 
 function updateActiveTab() {
@@ -336,6 +345,7 @@ async function showDetails(product) {
     } finally {
         isLoading = false;
         hideLoader();
+
     }
 }
 
@@ -657,6 +667,11 @@ function closeModalWindow() {
     document.body.style.overflow = 'auto';
     elements.modal.classList.add("hidden");
     elements.modal.classList.remove("active");
+    
+  
+    if (elements.container.innerHTML === "") {
+        renderProducts();
+    }
 }
 
 // Корзина
