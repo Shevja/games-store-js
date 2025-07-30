@@ -308,7 +308,7 @@ main#productsContainer {
 /* Корзина */
 
 .cart {
-    position: fixed;
+    position: relative;
     bottom: 0;
     right: 0;
     background: var(--primary-800);
@@ -799,6 +799,12 @@ main#productsContainer {
 
 /* Видео */
 
+.video-wrapper video {
+    width: 100%;
+    border-radius: 6px;
+    background: #000;
+}
+
 .video-wrapper {
     position: relative;
     padding-bottom: 56.25%;
@@ -807,11 +813,22 @@ main#productsContainer {
     margin-bottom: 15px;
 }
 
-.video-wrapper iframe {
+.video-wrapper video {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    border-radius: 6px;
+}
+
+.video-wrapper {
+    position: relative;
+}
+
+.video-wrapper .video-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
 }
