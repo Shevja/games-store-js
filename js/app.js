@@ -340,33 +340,248 @@ async function showDetails(product) {
 }
 
 function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
+    // Форматируем даты
+    const releaseDate = product.release_date ? new Date(product.release_date).toLocaleDateString('ru-RU') : 'Не указана';
+    const endSaleDate = product.end_date_sale ? new Date(product.end_date_sale).toLocaleDateString('ru-RU') : 'Не ограничена';
+
+    // Создаем блок с мета-информацией
+    const metaInfo = [];
+    if (product.developer) metaInfo.push(`<div><strong>Разработчик:</strong> ${product.developer}</div>`);
+    if (product.publisher) metaInfo.push(`<div><strong>Издатель:</strong> ${product.publisher}</div>`);
+    if (releaseDate) metaInfo.push(`<div><strong>Дата выхода:</strong> ${releaseDate}</div>`);
+    if (product.categories && product.categories.length) {
+        metaInfo.push(`<div><strong>Жанры:</strong> ${product.categories.join(', ')}</div>`);
+    }
+    if (product.capabilities) metaInfo.push(`<div><strong>Возможности:</strong> ${product.capabilities}</div>`);
+
+    // Создаем блок с языковой информацией
+    const langInfo = [];
+    if (product.voice_acting) langInfo.push(`<div><strong>Озвучка:</strong> ${product.voice_acting}</div>`);
+    if (product.interface_ru) langInfo.push(`<div><strong>Интерфейс:</strong> ${product.interface_ru}</div>`);
+    if (product.subtitles) langInfo.push(`<div><strong>Субтитры:</strong> ${product.subtitles}</div>`);
+
+    // Создаем блок с системными требованиями
+    const systemInfo = [];
+    if (product.compatibility) systemInfo.push(`<div><strong>Совместимость:</strong> ${product.compatibility}</div>`);
+    if (product.size) systemInfo.push(`<div><strong>Размер:</strong> ${(product.size / 1024).toFixed(1)} GB</div>`);
+
+    // Слайдер для скриншотов
+    let screenshotsSlider = '';
+    if (product.screenshots && product.screenshots.length) {
+        screenshotsSlider = `
+        <div class="media-section">
+            <h3>Скриншоты (${product.screenshots.length})</h3>
+            <div class="screenshots-slider">
+                <div class="slides-container">
+                    ${product.screenshots.map(img => `
+                        <div class="slide">
+                            <img src="${img}" loading="lazy" alt="Скриншот игры" />
+                        </div>
+                    `).join('')}
+                </div>
+                <button class="slider-nav prev"><i class="fas fa-chevron-left"></i></button>
+                <button class="slider-nav next"><i class="fas fa-chevron-right"></i></button>
+                <div class="slider-dots"></div>
+            </div>
+        </div>`;
+    }
+    
+    // Видео
+    let videosContent = '';
+    if (product.videos && product.videos.length) {
+        videosContent = `
+        <div class="media-section">
+            <h3>Видео</h3>
+            <div class="videos-grid">
+                ${product.videos.map(video => `
+                    <div class="video-wrapper">
+                        <iframe src="${video}" frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen></iframe>
+                    </div>
+                `).join('')}
+            </div>
+        </div>`;
+    }
+    
+    // Описание с кнопкой "Подробнее"
+    const descriptionId = `desc-${Date.now()}`;
+    const descriptionContent = `
+        <div class="description-section">
+            <h3>Описание</h3>
+            <div class="description-content" id="${descriptionId}">
+                <p>${product.description || 'Описание отсутствует'}</p>
+            </div>
+            <button class="read-more-btn" data-target="${descriptionId}">Подробнее</button>
+        </div>
+    `;
+    
+    // Формируем HTML
     elements.modalBody.innerHTML = `
-        <h2>${product.title || 'Без названия'}</h2>
-        <img src="${product.image || 'img/placeholder.jpg'}" loading="lazy" style="width:100%; border-radius:8px; margin:10px 0;" />
-        <p>${product.description || 'Описание отсутствует'}</p>
-        
-        <div class="price-options">
-            <h3>Варианты покупки</h3>
-            <div class="price-option selected" data-price="${keyPrice}">
-                <input type="radio" name="priceOption" id="option1" checked>
-                <label for="option1">Ключ - ${keyPrice}₽</label>
+        <div class="modal-header">
+            <div class="game-cover">
+                <img src="${product.image || 'img/placeholder.jpg'}" loading="lazy" alt="Обложка игры" />
+                ${product.sale_product ? `<div class="discount-badge">-${product.sale_product}%</div>` : ''}
             </div>
-            <div class="price-option" data-price="${uAccPrice}">
-                <input type="radio" name="priceOption" id="option2">
-                <label for="option2">На ваш аккаунт - ${uAccPrice}₽</label>
-            </div>
-            <div class="price-option" data-price="${newAccPrice}">
-                <input type="radio" name="priceOption" id="option3">
-                <label for="option3">На новый аккаунт - ${newAccPrice}₽</label>
+            <div class="game-header-info">
+                <h2>${product.title || 'Без названия'}</h2>
+                <div class="game-meta">${metaInfo.join('')}</div>
+                <div class="game-actions">
+                    <div class="price-display">
+                        <span class="final-price">${keyPrice}₽</span>
+                        ${product.sale_product ? `<span class="original-price">${Math.round(keyPrice * 100 / (100 - product.sale_product))}₽</span>` : ''}
+                    </div>
+                    <div class="sale-info">Акция действует до: ${endSaleDate}</div>
+                </div>
             </div>
         </div>
         
-        <button class="buy-button" onclick="addToCart('${product.product_id}', '${product.title || 'Без названия'}', ${keyPrice})">
-            Купить за ${keyPrice}₽
-        </button>
+        <div class="modal-content-grid">
+            <div class="main-content">
+                ${descriptionContent}
+                ${screenshotsSlider}
+                ${videosContent}
+            </div>
+            
+            <div class="sidebar">
+                <div class="info-block">
+                    <h3>Языковая информация</h3>
+                    ${langInfo.join('')}
+                </div>
+                
+                <div class="info-block">
+                    <h3>Системные требования</h3>
+                    ${systemInfo.join('')}
+                </div>
+                
+                <div class="purchase-options">
+                    <h3>Варианты покупки</h3>
+                    <div class="price-option selected" data-price="${keyPrice}">
+                        <input type="radio" name="priceOption" id="option1" checked>
+                        <label for="option1">
+                            <span class="option-title">Ключ активации</span>
+                            <span class="option-price">${keyPrice}₽</span>
+                            <span class="option-desc">Мгновенная доставка на email</span>
+                        </label>
+                    </div>
+                    <div class="price-option" data-price="${uAccPrice}">
+                        <input type="radio" name="priceOption" id="option2">
+                        <label for="option2">
+                            <span class="option-title">На ваш аккаунт</span>
+                            <span class="option-price">${uAccPrice}₽</span>
+                            <span class="option-desc">Привязка к вашему аккаунту Xbox</span>
+                        </label>
+                    </div>
+                    <div class="price-option" data-price="${newAccPrice}">
+                        <input type="radio" name="priceOption" id="option3">
+                        <label for="option3">
+                            <span class="option-title">На новый аккаунт</span>
+                            <span class="option-price">${newAccPrice}₽</span>
+                            <span class="option-desc">Полный доступ к новому аккаунту</span>
+                        </label>
+                    </div>
+                    
+                    <button class="buy-button" id="modalBuyButton">
+                        <i class="fas fa-shopping-cart"></i> Купить за ${keyPrice}₽
+                    </button>
+                    
+                    <div class="secure-info">
+                        <i class="fas fa-shield-alt"></i> Безопасная оплата и гарантия возврата
+                    </div>
+                </div>
+            </div>
+        </div>
     `;
-
+    
+    // Инициализация слайдера
+    if (product.screenshots && product.screenshots.length > 1) {
+        initSlider();
+    }
+    
+    // Инициализация кнопки "Подробнее"
+    initReadMoreButton(descriptionId);
+    
+    // Обработчик для кнопки покупки (чтобы предотвратить скачивание)
+    document.getElementById('modalBuyButton').addEventListener('click', function(e) {
+        e.preventDefault();
+        addToCart(product.product_id, product.title || 'Без названия', keyPrice);
+    });
+    
     setupPriceOptionHandlers(product, keyPrice, uAccPrice, newAccPrice);
+}
+
+function initSlider() {
+    const slider = document.querySelector('.screenshots-slider');
+    const slidesContainer = slider.querySelector('.slides-container');
+    const slides = slider.querySelectorAll('.slide');
+    const dotsContainer = slider.querySelector('.slider-dots');
+    const prevBtn = slider.querySelector('.prev');
+    const nextBtn = slider.querySelector('.next');
+    
+    let currentSlide = 0;
+    const slideCount = slides.length;
+    
+    // Создаем точки навигации
+    slides.forEach((_, index) => {
+        const dot = document.createElement('div');
+        dot.classList.add('dot');
+        if (index === 0) dot.classList.add('active');
+        dot.addEventListener('click', () => goToSlide(index));
+        dotsContainer.appendChild(dot);
+    });
+    
+    // Функция переключения слайда
+    function goToSlide(index) {
+        if (index < 0) index = slideCount - 1;
+        if (index >= slideCount) index = 0;
+        
+        slidesContainer.style.transform = `translateX(-${index * 100}%)`;
+        currentSlide = index;
+        
+        // Обновляем активную точку
+        slider.querySelectorAll('.dot').forEach((dot, i) => {
+            dot.classList.toggle('active', i === currentSlide);
+        });
+    }
+    
+    // Навигационные кнопки
+    prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
+    nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
+    
+    // Автопрокрутка (опционально)
+    let slideInterval = setInterval(() => goToSlide(currentSlide + 1), 5000);
+    
+    // Остановка автопрокрутки при наведении
+    slider.addEventListener('mouseenter', () => clearInterval(slideInterval));
+    slider.addEventListener('mouseleave', () => {
+        slideInterval = setInterval(() => goToSlide(currentSlide + 1), 5000);
+    });
+}
+
+function initReadMoreButton(descId) {
+    const descContainer = document.getElementById(descId);
+    const btn = document.querySelector(`[data-target="${descId}"]`);
+    
+    // Проверяем, нужно ли показывать кнопку
+    descContainer.style.maxHeight = '9em'; // Примерно 9 строк текста
+    descContainer.style.overflow = 'hidden';
+    descContainer.style.transition = 'max-height 0.3s ease';
+    
+    // Если контент не превышает максимальную высоту, скрываем кнопку
+    if (descContainer.scrollHeight <= descContainer.clientHeight) {
+        btn.style.display = 'none';
+        return;
+    }
+    
+    btn.addEventListener('click', function() {
+        if (descContainer.style.maxHeight === '9em') {
+            descContainer.style.maxHeight = descContainer.scrollHeight + 'px';
+            btn.textContent = 'Свернуть';
+        } else {
+            descContainer.style.maxHeight = '9em';
+            btn.textContent = 'Подробнее';
+        }
+    });
 }
 
 function setupPriceOptionHandlers(product, keyPrice, uAccPrice, newAccPrice) {
