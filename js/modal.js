@@ -148,21 +148,21 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
     const firstVideo = product.videos && product.videos.length > 0 ? product.videos[0] : null;
     const isHLS = firstVideo && firstVideo.endsWith('.m3u8');
     
-     let isSoundEnabled = localStorage.getItem('videoSoundEnabled') === 'true';
+    let isSoundEnabled = localStorage.getItem('videoSoundEnabled') !== 'false';
     
     // Создаем медиа-контент (обложка или видео для мобильных)
     let mediaContent = '';
     if (isMobile && firstVideo) {
         mediaContent = `
             <div class="mobile-video-container">
-                <video autoplay loop muted playsinline
+                <video autoplay loop ${isSoundEnabled ? '' : 'muted'} playsinline
                     poster="${product.image || 'img/placeholder.jpg'}"
                     class="game-cover">
                     ${!isHLS ? `<source src="${firstVideo}" type="video/mp4">` : ''}
                     Ваш браузер не поддерживает видео.
                 </video>
-                <button class="sound-toggle sound-off">
-                    <i class="fas fa-volume-mute"></i>
+                <button class="sound-toggle ${isSoundEnabled ? 'sound-on' : 'sound-off'}">
+                    <i class="fas fa-volume-${isSoundEnabled ? 'up' : 'mute'}"></i>
                 </button>
                 ${isHLS ? `
                 <script>
@@ -284,17 +284,15 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
     // Обработчики вариантов покупки
     setupPriceOptionHandlers(product, keyPrice, uAccPrice, newAccPrice);
 }
-
 function initVideoPlayers() {
     // Обработчик для кнопки звука
     const soundToggle = document.querySelector('.sound-toggle');
     if (soundToggle) {
         soundToggle.addEventListener('click', function() {
             isSoundEnabled = !isSoundEnabled;
-            const videos = document.querySelectorAll('video');
             
-            // Переключаем состояние звука для всех видео
-            videos.forEach(video => {
+            // Обновляем состояние всех видео на странице
+            document.querySelectorAll('video').forEach(video => {
                 video.muted = !isSoundEnabled;
             });
             
@@ -308,25 +306,29 @@ function initVideoPlayers() {
         });
     }
 
-    // Остальные обработчики видео
-    document.querySelectorAll('.video-wrapper video').forEach(video => {
+    // Инициализация состояния звука для всех видео
+    document.querySelectorAll('video').forEach(video => {
+        video.muted = !isSoundEnabled;
+        
+        // Остальные обработчики видео...
         const wrapper = video.closest('.video-wrapper');
-        
-        video.addEventListener('play', () => {
-            wrapper.classList.add('playing');
-        });
-        
-        video.addEventListener('pause', () => {
-            wrapper.classList.remove('playing');
-        });
-        
-        video.addEventListener('click', function(e) {
-            if (video.paused) {
-                video.play().catch(e => console.log('Play error:', e));
-            } else {
-                video.pause();
-            }
-        });
+        if (wrapper) {
+            video.addEventListener('play', () => {
+                wrapper.classList.add('playing');
+            });
+            
+            video.addEventListener('pause', () => {
+                wrapper.classList.remove('playing');
+            });
+            
+            video.addEventListener('click', function(e) {
+                if (video.paused) {
+                    video.play().catch(e => console.log('Play error:', e));
+                } else {
+                    video.pause();
+                }
+            });
+        }
     });
 }
 
