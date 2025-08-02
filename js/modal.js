@@ -141,17 +141,22 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
     const firstVideo = product.videos && product.videos.length > 0 ? product.videos[0] : null;
     const isHLS = firstVideo && firstVideo.endsWith('.m3u8');
     
+     let isSoundEnabled = localStorage.getItem('videoSoundEnabled') === 'true';
+    
     // Создаем медиа-контент (обложка или видео для мобильных)
     let mediaContent = '';
     if (isMobile && firstVideo) {
         mediaContent = `
             <div class="mobile-video-container">
-                <video autoplay loop muted playsinline 
+                <video autoplay loop ${isSoundEnabled ? '' : 'muted'} playsinline
                     poster="${product.image || 'img/placeholder.jpg'}"
                     class="game-cover">
                     ${!isHLS ? `<source src="${firstVideo}" type="video/mp4">` : ''}
                     Ваш браузер не поддерживает видео.
                 </video>
+                <button class="sound-toggle ${isSoundEnabled ? 'sound-on' : 'sound-off'}">
+                    <i class="fas fa-volume-${isSoundEnabled ? 'up' : 'mute'}"></i>
+                </button>
                 ${isHLS ? `
                 <script>
                     (function() {
@@ -272,8 +277,27 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
     // Обработчики вариантов покупки
     setupPriceOptionHandlers(product, keyPrice, uAccPrice, newAccPrice);
 }
-
 function initVideoPlayers() {
+    // Обработчик для кнопки звука
+    document.querySelector('.sound-toggle')?.addEventListener('click', function() {
+        const videos = document.querySelectorAll('.mobile-video-container video');
+        const isCurrentlyMuted = videos[0]?.muted;
+        
+        // Переключаем состояние звука для всех видео
+        videos.forEach(video => {
+            video.muted = !isCurrentlyMuted;
+        });
+        
+        // Обновляем кнопку
+        this.classList.toggle('sound-on', !isCurrentlyMuted);
+        this.classList.toggle('sound-off', isCurrentlyMuted);
+        this.innerHTML = `<i class="fas fa-volume-${!isCurrentlyMuted ? 'up' : 'mute'}"></i>`;
+        
+        // Сохраняем настройку
+        localStorage.setItem('videoSoundEnabled', !isCurrentlyMuted);
+    });
+
+    // Остальные обработчики видео
     document.querySelectorAll('.video-wrapper video').forEach(video => {
         const wrapper = video.closest('.video-wrapper');
         

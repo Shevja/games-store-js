@@ -1056,6 +1056,43 @@ main#productsContainer {
 }
 
 
+/* Стили для кнопки звука */
+
+.sound-toggle {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    width: 36px;
+    height: 36px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+
+.sound-toggle:hover {
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.sound-toggle i {
+    font-size: 16px;
+}
+
+.sound-toggle.sound-on {
+    background-color: rgba(16, 124, 16, 0.7);
+}
+
+.sound-toggle.sound-on:hover {
+    background-color: rgba(16, 124, 16, 0.9);
+}
+
+
 /* Для мобильных - адаптация */
 
 @media (max-width: 768px) {
