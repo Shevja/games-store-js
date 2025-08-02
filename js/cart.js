@@ -1,9 +1,56 @@
+// Обновленная функция добавления в корзину с проверкой дубликатов
 function addToCart(id, title, price) {
+    // Проверяем, есть ли уже такой товар в корзине
+    const existingItem = cart.find(item => item.id === id);
+
+    if (existingItem) {
+        // Если товар уже есть в корзине, показываем сообщение
+        showNotification('Этот товар уже в корзине');
+        return; // Прекращаем выполнение функции
+    }
+
+    // Если товара нет в корзине, добавляем его
     cart.push({ id, title, price });
     updateCartUI();
-    closeModalWindow();
+
+    // Анимация иконки корзины
+    const cartIcon = document.getElementById('cartIcon');
+    cartIcon.classList.add('shake');
+
+    // Удаляем класс анимации после завершения
+    setTimeout(() => {
+        cartIcon.classList.remove('shake');
+    }, 500);
+
+    // Показываем уведомление о добавлении
+    showNotification('Товар добавлен в корзину');
 }
 
+// Функция для показа уведомлений
+function showNotification(message) {
+    // Создаем элемент уведомления
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.textContent = message;
+
+    // Добавляем в DOM
+    document.body.appendChild(notification);
+
+    // Показываем с анимацией
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 10);
+
+    // Удаляем через 3 секунды
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
+
+// Остальные функции остаются без изменений
 function updateCartUI() {
     elements.cartItems.innerHTML = cart.map((item, index) => `
         <li>
@@ -12,8 +59,29 @@ function updateCartUI() {
         </li>
     `).join("");
 
-    elements.cartCount.textContent = cart.length;
+    // Обновляем счетчики
+    const cartCount = cart.length;
+    elements.cartCount.textContent = cartCount;
+    document.querySelector('.cart-badge').textContent = cartCount;
     elements.cartTotal.textContent = cart.reduce((sum, item) => sum + item.price, 0);
+}
+
+function toggleCart() {
+    const cart = document.getElementById('cart');
+    cart.classList.toggle('active');
+}
+
+function initCart() {
+    const cartIcon = document.getElementById('cartIcon');
+    const cart = document.getElementById('cart');
+
+    cartIcon.addEventListener('click', toggleCart);
+
+    document.addEventListener('click', (e) => {
+        if (!cart.contains(e.target) && e.target !== cartIcon && !cartIcon.contains(e.target)) {
+            cart.classList.remove('active');
+        }
+    });
 }
 
 function removeFromCart(index) {
@@ -38,7 +106,11 @@ function checkout() {
     alert(`Заказ на ${cart.length} товаров на сумму ${total}₽ отправлен!`);
     cart = [];
     updateCartUI();
+    document.getElementById('cart').classList.remove('active');
 }
+
+// Инициализация при загрузке
+document.addEventListener('DOMContentLoaded', initCart);
 
 // Глобальные функции
 window.addToCart = addToCart;

@@ -31,32 +31,56 @@ function createProductCard(product, price) {
     const card = document.createElement("div");
     card.className = "product-card";
 
+    // Проверяем наличие русской озвучки
+    const hasRussianVoice = product.interface_ru &&
+        (product.interface_ru.includes('русск') ||
+            product.interface_ru.includes('russian') ||
+            product.interface_ru.toLowerCase().includes('рус'));
+
     const priceText = price !== "—" ? `От ${price} ₽` : "Цена не указана";
     const title = product.title || "Без названия";
     const image = product.image || "img/placeholder.jpg";
     const description = product.short_description || truncateDescription(product.description) || "Описание отсутствует";
 
+    // Элементы для отображения поверх карточки
+    const overlayElements = `
+       
+            ${hasRussianVoice ? `
+                <div class="voice-flag">
+                    <img src="img/ru.svg" alt="Русская озвучка" title="Русская озвучка">
+                </div>
+            ` : ''}
+            
+            ${product.sale_product ? `
+                <div class="discount-badge">
+                    -${product.prices.key.discounted_percentage}%
+                </div>
+            ` : ''}
+    
+    `;
+
     if (currentView === 'grid') {
         card.innerHTML = `
-          
-            <img src="${image}" alt="${title}" loading="lazy" />
-            <div>
-            <h4>${title}</h4>
-            <p class="product-price">${priceText}</p>
-              </div>
-        `;
-    } else if (currentView === 'list') {
-        card.innerHTML = `
+            ${overlayElements}
             <img src="${image}" alt="${title}" loading="lazy" />
             <div>
                 <h4>${title}</h4>
-                <p>${description}</p>
-                <p class="product-price">${priceText}</p>
+                <p class="product-price">${priceText} ${product.sale_product ? `<span class="original-price">${product.full_price}₽</span>` : ''}</p>
+            </div>
+        `;
+    } else if (currentView === 'list') {
+        card.innerHTML = `
+            ${overlayElements}
+            <img src="${image}" alt="${title}" loading="lazy" />
+            <div>
+                <h4>${title}</h4>
+                <p class="list_text_card">${description}</p>
+                <p class="product-price">${priceText} ${product.sale_product ? `<span class="original-price">${product.full_price}₽</span>` : ''}</p>
             </div>
         `;
     } else {
         card.innerHTML = `
-           <h4>${title} <span class="product-price">${price !== "—" ? price + " ₽" : "—"}</span></h4>
+            <h4>${title} <p class="product-price">${priceText} ${product.sale_product ? `<span class="original-price">${product.full_price}₽</span>` : ''}</p></h4>
         `;
     }
 
