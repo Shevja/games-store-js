@@ -57,16 +57,9 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
     }
     if (product.capabilities) metaInfo.push(`<div><strong>Возможности:</strong> ${product.capabilities}</div>`);
 
-    // Создаем блок с языковой информацией
-    // const langInfo = [];
-    // if (product.voice_acting) langInfo.push(`<div><strong>Озвучка:</strong> ${product.voice_acting}</div>`);
-    // if (product.interface_ru) langInfo.push(`<div><strong>Интерфейс:</strong> ${product.interface_ru}</div>`);
-    // if (product.subtitles) langInfo.push(`<div><strong>Субтитры:</strong> ${product.subtitles}</div>`);
-
     // Создаем блок с системными требованиями
     const systemInfo = [];
     if (product.compatibility) systemInfo.push(`<div><strong>Совместимость:</strong> ${product.compatibility}</div>`);
-    // if (product.size) systemInfo.push(`<div><strong>Размер:</strong> ${(product.size / 1024).toFixed(1)} GB</div>`);
 
     // Слайдер для скриншотов
     let screenshotsSlider = '';
@@ -143,11 +136,53 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
         </div>
     `;
     
+    // Определяем мобильное устройство
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    const firstVideo = product.videos && product.videos.length > 0 ? product.videos[0] : null;
+    const isHLS = firstVideo && firstVideo.endsWith('.m3u8');
+    
+    // Создаем медиа-контент (обложка или видео для мобильных)
+    let mediaContent = '';
+    if (isMobile && firstVideo) {
+        mediaContent = `
+            <div class="mobile-video-container">
+                <video autoplay loop muted playsinline 
+                    poster="${product.image || 'img/placeholder.jpg'}"
+                    class="game-cover">
+                    ${!isHLS ? `<source src="${firstVideo}" type="video/mp4">` : ''}
+                    Ваш браузер не поддерживает видео.
+                </video>
+                ${isHLS ? `
+                <script>
+                    (function() {
+                        const video = document.querySelector('.mobile-video-container video');
+                        if(Hls.isSupported()) {
+                            const hls = new Hls();
+                            hls.loadSource('${firstVideo}');
+                            hls.attachMedia(video);
+                        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                            video.src = '${firstVideo}';
+                        }
+                        video.play().catch(e => console.log('Autoplay error:', e));
+                    })();
+                </script>
+                ` : ''}
+            </div>
+        `;
+    } else {
+        mediaContent = `
+            <img src="${product.image || 'img/placeholder.jpg'}" 
+                 loading="lazy" 
+                 alt="Обложка игры" 
+                 class="game-cover" />
+        `;
+    }
+    
     // Формируем HTML
     elements.modalBody.innerHTML = `
         <div class="modal-header">
-            <div class="game-cover">
-                <img src="${product.image || 'img/placeholder.jpg'}" loading="lazy" alt="Обложка игры" />
+            <div class="game-cover-container">
+                ${mediaContent}
                 ${product.sale_product ? `<div class="discount-badge">-${product.sale_product}%</div>` : ''}
             </div>
             <div class="game-header-info">
@@ -171,8 +206,6 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
             </div>
             
             <div class="sidebar">
-               
-                
                 <div class="info-block">
                     <h3>Системные требования</h3>
                     ${systemInfo.join('')}
@@ -223,14 +256,20 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
     }
     
     // Инициализация кнопки "Подробнее"
-    initReadMoreButton(descriptionId);
+    if (product.description) {
+        initReadMoreButton(descriptionId);
+    }
     
-    // Обработчик для кнопки покупки (чтобы предотвратить скачивание)
+    // Инициализация видео
+    initVideoPlayers();
+    
+    // Обработчик для кнопки покупки
     document.getElementById('modalBuyButton').addEventListener('click', function(e) {
         e.preventDefault();
         addToCart(product.product_id, product.title || 'Без названия', keyPrice);
     });
-    initVideoPlayers();
+    
+    // Обработчики вариантов покупки
     setupPriceOptionHandlers(product, keyPrice, uAccPrice, newAccPrice);
 }
 
@@ -309,7 +348,7 @@ function initReadMoreButton(descId) {
     const btn = document.querySelector(`[data-target="${descId}"]`);
     
     // Проверяем, нужно ли показывать кнопку
-    descContainer.style.maxHeight = '140px'; // Примерно 9 строк текста
+    descContainer.style.maxHeight = '140px';
     descContainer.style.overflow = 'hidden';
     descContainer.style.transition = 'max-height 0.3s ease';
     
