@@ -573,15 +573,6 @@ main#productsContainer {
     overflow-y: auto;
 }
 
-#closeModal {
-    position: absolute;
-    top: 10px;
-    right: 20px;
-    cursor: pointer;
-    font-size: 24px;
-    z-index: 103;
-}
-
 .modal-header {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -1767,8 +1758,9 @@ main#productsContainer {
         -webkit-box-pack: center;
         -ms-flex-pack: center;
         justify-content: center;
-        z-index: 200;
-        line-height: 100%;
+        z-index: 9999;
+        font-size: 30px;
+        line-height: 19px;
         color: white;
         border: none;
         -webkit-transition: -webkit-transform 0.2s;
