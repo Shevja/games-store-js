@@ -179,12 +179,7 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
             </div>
             <button class="read-more-btn" data-target="${descriptionId}">Больше</button>
         </div>
-        <div class="game-actions">
-                <div class="price-display">
-                    <span class="final-price">${keyPrice}₽</span>
-                    ${product.sale_product ? `<span class="original-price">${product.full_price}₽</span>` : ''}
-                </div>
-            </div>
+        
     `;
     
     // Game header info (перенесено в таб "Об игре")
@@ -230,7 +225,9 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
         `}
     </div>
     <div class="cover-price">
-        <span class="final-price">${keyPrice}₽</span>
+            
+        <span class="final-price"><span class="ot_price">от</span>${keyPrice}₽</span>
+         ${product.sale_product ? `<span class="original-price">${product.full_price}₽</span>` : ''}
     </div>
     `;
 
