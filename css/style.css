@@ -771,7 +771,7 @@ main#productsContainer {
 }
 
 .game-actions {
-    margin-top: 15px;
+    margin: 10px 0 15px;
 }
 
 .price-display {
@@ -810,12 +810,12 @@ main#productsContainer {
     gap: 30px;
 }
 
-.description-section {
-    margin-bottom: 30px;
-}
-
 .description-section p {
     line-height: 1.6;
+}
+
+.description-section h3 {
+    font-size: 18px;
 }
 
 .media-section {
@@ -1095,7 +1095,8 @@ main#productsContainer {
     position: relative;
 }
 
-.description-content:after {
+.description-content::after,
+.game-meta::after {
     content: '';
     position: absolute;
     bottom: 0;
@@ -1111,7 +1112,8 @@ main#productsContainer {
     transition: opacity 0.3s;
 }
 
-.description-content.expanded:after {
+.description-content.expanded:after,
+.game-meta.expanded::after {
     opacity: 0;
 }
 
@@ -1437,7 +1439,7 @@ main#productsContainer {
     }
     /* Заголовок игры */
     .game-header-info {
-        padding: 0 0 16px;
+        padding: 0;
     }
     .game-header-info h2 {
         margin: 0 0 6px 0;
@@ -1452,8 +1454,7 @@ main#productsContainer {
         display: -ms-flexbox;
         display: flex;
         flex-direction: column;
-        gap: 8px;
-        margin: 14px 0;
+        gap: 3px;
         font-size: 14px;
         color: var(--primary-300);
     }
@@ -1465,6 +1466,55 @@ main#productsContainer {
         -ms-flex-align: center;
         align-items: center;
         gap: 6px;
+        margin-bottom: 0;
+    }
+    /* Базовые стили для .game-meta */
+    .game-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        font-size: 14px;
+        color: var(--primary-300);
+        position: relative;
+    }
+    .game-meta div {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 0;
+    }
+    /* Градиентное затемнение */
+    .game-meta-gradient {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 30px;
+        background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+    }
+    .game-meta.expanded .game-meta-gradient {
+        opacity: 0;
+    }
+    /* Стили кнопки */
+    .game-meta-toggle {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-top: 8px;
+        color: var(--primary-300);
+        background: none;
+        border: none;
+        padding: 0;
+        font-size: 14px;
+        cursor: pointer;
+    }
+    .game-meta-toggle svg {
+        transition: transform 0.3s ease;
+    }
+    .game-meta.expanded+.game-meta-toggle svg {
+        transform: rotate(180deg);
     }
     /* Блок покупки (липкий) */
     .purchase-footer {
@@ -1759,7 +1809,7 @@ main#productsContainer {
         font-size: 20px;
     }
     .game-meta {
-        gap: 8px;
+        gap: 4px;
     }
     .game-meta div {
         align-items: start;

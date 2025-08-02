@@ -54,25 +54,62 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
     const releaseDate = product.release_date ? new Date(product.release_date).toLocaleDateString('ru-RU') : 'Не указана';
     const endSaleDate = product.end_date_sale ? new Date(product.end_date_sale).toLocaleDateString('ru-RU') : 'Не ограничена';
 
-    // Создаем блок с мета-информацией
+    // Создаем блок с мета-информацией (объединяем все данные)
     const metaInfo = [];
-    if (product.developer) metaInfo.push(`<div><strong>Разработчик:</strong> ${product.developer}</div>`);
-    if (product.publisher) metaInfo.push(`<div><strong>Издатель:</strong> ${product.publisher}</div>`);
-    if (releaseDate) metaInfo.push(`<div><strong>Дата выхода:</strong> ${releaseDate}</div>`);
+
+    // Основная информация
+    // Системные требования
+
+    if (product.compatibility) metaInfo.push(`<div><strong>Совместимость:</strong> ${product.compatibility}</div>`);
+    // Языковая информация
     if (product.categories && product.categories.length) {
         metaInfo.push(`<div><strong>Жанры:</strong> ${product.categories.join(', ')}</div>`);
     }
+    if (releaseDate) metaInfo.push(`<div><strong>Дата выхода:</strong> ${releaseDate}</div>`);
+
+    // Функция для форматирования языковых значений
+    function formatLanguageValue(value, type) {
+        if (!value) return value;
+
+        // Приводим к нижнему регистру для удобства проверки
+        const val = value.toLowerCase();
+
+        // Определяем окончания в зависимости от типа
+        const endings = {
+            'voice': { 'rus': 'ая', 'eng': 'ая' }, // озвучкА русскАЯ
+            'interface': { 'rus': 'ий', 'eng': 'ий' }, // интерфейс русскИЙ
+            'subtitles': { 'rus': 'ие', 'eng': 'ие' } // субтитры русскиЕ
+        };
+
+        // Проверяем наличие языков
+        const hasRussian = val.includes('рус') || val.includes('russian');
+        const hasEnglish = val.includes('англ') || val.includes('english');
+
+        // Формируем результат
+        let result = [];
+        if (hasRussian) result.push(`Русск${endings[type].rus}`);
+        if (hasEnglish) result.push(`Английск${endings[type].eng}`);
+
+        return result.join(' и ');
+    }
+
+    // В вашем коде заменяем строки с языковыми полями:
+    if (product.voice_acting) {
+        metaInfo.push(`<div><strong>Озвучка:</strong> ${formatLanguageValue(product.voice_acting, 'voice')}</div>`);
+    }
+    if (product.interface_ru) {
+        metaInfo.push(`<div><strong>Интерфейс:</strong> ${formatLanguageValue(product.interface_ru, 'interface')}</div>`);
+    }
+    if (product.subtitles) {
+        metaInfo.push(`<div><strong>Субтитры:</strong> ${formatLanguageValue(product.subtitles, 'subtitles')}</div>`);
+    }
+    if (product.developer) metaInfo.push(`<div><strong>Разработчик:</strong> ${product.developer}</div>`);
+    if (product.publisher) metaInfo.push(`<div><strong>Издатель:</strong> ${product.publisher}</div>`);
+
     if (product.capabilities) metaInfo.push(`<div><strong>Возможности:</strong> ${product.capabilities}</div>`);
 
-    // Создаем блок с языковой информацией
-    const langInfo = [];
-    if (product.voice_acting) langInfo.push(`<div><strong>Озвучка:</strong> ${product.voice_acting}</div>`);
-    if (product.interface_ru) langInfo.push(`<div><strong>Интерфейс:</strong> ${product.interface_ru}</div>`);
-    if (product.subtitles) langInfo.push(`<div><strong>Субтитры:</strong> ${product.subtitles}</div>`);
 
-    // Создаем блок с системными требованиями
-    const systemInfo = [];
-    if (product.compatibility) systemInfo.push(`<div><strong>Совместимость:</strong> ${product.compatibility}</div>`);
+
 
     // Скриншоты как простой список
     let screenshotsContent = '';
@@ -140,21 +177,21 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
             <div class="description-content" id="${descriptionId}">
                 <p>${product.description || 'Описание отсутствует'}</p>
             </div>
-            <button class="read-more-btn" data-target="${descriptionId}">Подробнее</button>
+            <button class="read-more-btn" data-target="${descriptionId}">Больше</button>
         </div>
+        <div class="game-actions">
+                <div class="price-display">
+                    <span class="final-price">${keyPrice}₽</span>
+                    ${product.sale_product ? `<span class="original-price">${product.full_price}₽</span>` : ''}
+                </div>
+            </div>
     `;
     
     // Game header info (перенесено в таб "Об игре")
-    const gameHeaderInfo = `
+     const gameHeaderInfo = `
         <div class="game-header-info">
             <div class="game-meta">${metaInfo.join('')}</div>
-            <div class="game-actions">
-                <div class="price-display">
-                    <span class="final-price">${keyPrice}₽</span>
-                    ${product.sale_product ? `<span class="original-price">${Math.round(keyPrice * 100 / (100 - product.sale_product))}₽</span>` : ''}
-                </div>
-                
-            </div>
+            
         </div>
     `;
     
@@ -266,16 +303,10 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
                      <div class="sale-info">Акция действует до: ${endSaleDate}</div>
                      </div>
             </div>
-                    ${descriptionContent}
-                    ${gameHeaderInfo}
-                    <div class="info-block">
-                        <h3>Языковая информация</h3>
-                        ${langInfo.join('')}
-                    </div>
-                    <div class="info-block">
-                        <h3>Системные требования</h3>
-                        ${systemInfo.join('')}
-                    </div>
+            ${gameHeaderInfo}        
+            ${descriptionContent}
+                    
+                    
                     ${!isMobile ? videosContent : ''}
                 </div>
                 
@@ -351,7 +382,8 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
     if (product.description) {
         initReadMoreButton(descriptionId);
     }
-    
+     // Инициализация кнопки "Подробнее"
+      initGameMetaReadMore();
     // Инициализация видео
     initVideoPlayers();
     
@@ -525,11 +557,11 @@ function initReadMoreButton(descId) {
     function toggleDescription() {
         if (descContainer.style.maxHeight === '70px') {
             descContainer.style.maxHeight = descContainer.scrollHeight + 'px';
-            btn.textContent = 'Свернуть';
+            btn.textContent = 'Меньше';
             descContainer.classList.add('expanded'); // Добавляем класс при раскрытии
         } else {
             descContainer.style.maxHeight = '70px';
-            btn.textContent = 'Подробнее';
+            btn.textContent = 'Больше';
             descContainer.classList.remove('expanded'); // Удаляем класс при скрытии
         }
     }
@@ -541,6 +573,63 @@ function initReadMoreButton(descId) {
     });
     
     descContainer.addEventListener('click', toggleDescription);
+}
+function initGameMetaReadMore() {
+    document.querySelectorAll('.game-meta').forEach(meta => {
+        // Сохраняем оригинальную высоту
+        meta.dataset.originalHeight = meta.scrollHeight;
+        
+        // Если контент не превышает 70px - ничего не делаем
+        if (meta.scrollHeight <= 60) {
+            meta.style.removeProperty('overflow');
+            return;
+        }
+
+        // Добавляем класс и стили
+        meta.classList.add('collapsible-meta');
+        meta.style.maxHeight = '60px';
+        meta.style.overflow = 'hidden';
+        meta.style.transition = 'max-height 0.3s ease';
+        meta.style.position = 'relative';
+        meta.style.cursor = 'pointer';
+
+        // Создаем кнопку
+        const btn = document.createElement('button');
+        btn.className = 'read-more-btn';
+        btn.innerHTML = `
+            Больше
+            
+        `;
+
+        // Вставляем кнопку после блока
+        meta.insertAdjacentElement('afterend', btn);
+
+        // Обработчик клика
+        const toggle = () => {
+            if (meta.style.maxHeight === '60px') {
+                meta.style.maxHeight = `${meta.dataset.originalHeight}px`;
+                btn.innerHTML = `
+                    Меньше
+                   
+                `;
+                meta.classList.add('expanded');
+            } else {
+                meta.style.maxHeight = '60px';
+                btn.innerHTML = `
+                    Больше
+                 
+                `;
+                meta.classList.remove('expanded');
+            }
+        };
+
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggle();
+        });
+
+        meta.addEventListener('click', toggle);
+    });
 }
 
 function setupPriceOptionHandlers(product, keyPrice, uAccPrice, newAccPrice) {
