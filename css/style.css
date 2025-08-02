@@ -47,6 +47,7 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    font-family: 'SF Pro Display', sans-serif;
     outline: none;
 }
 
@@ -489,8 +490,13 @@ main#productsContainer {
 
 @media (max-width: 768px) {
     .search-settings {
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
         align-items: center;
+        -ms-flex-wrap: nowrap;
         flex-wrap: nowrap;
     }
     .search-container {
@@ -597,7 +603,11 @@ main#productsContainer {
 /* Стили для миниатюры игры */
 
 .game-title-wrapper {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
     gap: 15px;
     margin-bottom: 15px;
@@ -615,11 +625,18 @@ main#productsContainer {
 .game-thumbnail {
     width: 100%;
     height: 100%;
+    -o-object-fit: cover;
     object-fit: cover;
+    -webkit-transition: -webkit-transform 0.2s;
+    transition: -webkit-transform 0.2s;
+    -o-transition: transform 0.2s;
     transition: transform 0.2s;
+    transition: transform 0.2s, -webkit-transform 0.2s;
 }
 
 .game_title_img:hover .game-thumbnail {
+    -webkit-transform: scale(1.05);
+    -ms-transform: scale(1.05);
     transform: scale(1.05);
 }
 
@@ -637,8 +654,14 @@ main#productsContainer {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.9);
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
     justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
     z-index: 3000;
 }
@@ -646,6 +669,7 @@ main#productsContainer {
 .fullscreen-image-content {
     max-width: 90%;
     max-height: 90%;
+    -o-object-fit: contain;
     object-fit: contain;
 }
 
@@ -664,13 +688,23 @@ main#productsContainer {
 /* Стили для мобильных табов */
 
 .mobile-tabs {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
     justify-content: start;
     gap: 60px;
     margin-left: 10px;
-    padding: 0 9px;
+    padding: 0 9px 5px;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
     position: relative;
+    background: var(--primary-850);
+    position: sticky;
+    top: 200px;
+    z-index: 333;
 }
 
 .tab-button {
@@ -679,6 +713,8 @@ main#productsContainer {
     font-size: .85rem;
     line-height: 1.06rem;
     font-weight: 700;
+    width: -webkit-max-content;
+    width: -moz-max-content;
     width: max-content;
     padding-bottom: 4px;
     color: #6b7280;
@@ -686,6 +722,8 @@ main#productsContainer {
     outline: none;
     background: none;
     cursor: pointer;
+    -webkit-transition: .3s;
+    -o-transition: .3s;
     transition: .3s;
     font-size: inherit;
     margin-top: 20px;
@@ -724,12 +762,19 @@ main#productsContainer {
 
 @media (max-width: 768px) {
     .modal-content-grid {
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
         flex-direction: column;
     }
     .main-content.mobile-view {
+        -webkit-box-ordinal-group: 2;
+        -ms-flex-order: 1;
         order: 1;
     }
     .sidebar {
+        -webkit-box-ordinal-group: 3;
+        -ms-flex-order: 2;
         order: 2;
     }
 }
@@ -882,8 +927,9 @@ main#productsContainer {
 
 .purchase-options {
     margin-top: 20px;
-    border-radius: 8px;
+    padding-top: 20px;
     margin-bottom: 30px;
+    border-top: 1px solid var(--primary-600);
 }
 
 .purchase-options h3 {
@@ -1092,16 +1138,15 @@ main#productsContainer {
     position: relative;
 }
 
-.description-content::after,
-.game-meta::after {
+.description-content::after {
     content: '';
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
     height: 2em;
-    background: -webkit-gradient(linear, left top, left bottom, from(transparent), to(var(--primary-850)));
     background: -o-linear-gradient(top, transparent, var(--primary-850));
+    background: -webkit-gradient(linear, left top, left bottom, from(transparent), to(var(--primary-850)));
     background: linear-gradient(to bottom, transparent, var(--primary-850));
     opacity: 1;
     -webkit-transition: opacity 0.3s;
@@ -1170,6 +1215,7 @@ main#productsContainer {
 .voice-flag img {
     width: 100%;
     height: 100%;
+    -o-object-fit: cover;
     object-fit: cover;
     display: block;
 }
@@ -1178,7 +1224,11 @@ main#productsContainer {
     position: absolute;
     left: 10px;
     bottom: 10px;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
     gap: 10px;
     z-index: 5;
@@ -1200,8 +1250,14 @@ main#productsContainer {
     background: #232222c2;
     border-radius: 1.5rem;
     padding: 7px 16px;
+    width: -webkit-max-content;
+    width: -moz-max-content;
     width: max-content;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
     gap: 4px;
 }
@@ -1235,7 +1291,9 @@ main#productsContainer {
 .game-cover-container img {
     width: 100%;
     height: 100%;
+    -o-object-fit: cover;
     object-fit: cover;
+    -o-object-position: center;
     object-position: center;
 }
 
@@ -1247,6 +1305,7 @@ main#productsContainer {
 .mobile-video-container video {
     width: 100%;
     height: 100%;
+    -o-object-fit: cover;
     object-fit: cover;
 }
 
@@ -1261,6 +1320,7 @@ main#productsContainer {
         width: 100%;
         height: auto;
         max-height: 280px;
+        -o-object-fit: contain;
         object-fit: contain;
     }
 }
@@ -1272,6 +1332,8 @@ main#productsContainer {
     position: absolute;
     bottom: 15px;
     left: 50%;
+    -webkit-transform: translate(-50%, 0%);
+    -ms-transform: translate(-50%, 0%);
     transform: translate(-50%, 0%);
     width: 36px;
     height: 36px;
@@ -1280,10 +1342,18 @@ main#productsContainer {
     border-radius: 50%;
     color: white;
     cursor: pointer;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
     justify-content: center;
     z-index: 10;
+    -webkit-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
     transition: all 0.3s ease;
 }
 
@@ -1366,6 +1436,7 @@ main#productsContainer {
         top: 0;
         padding: 0;
         margin: 0;
+        z-index: 999;
     }
     .game-cover {
         width: 100%;
@@ -1462,6 +1533,9 @@ main#productsContainer {
         display: -webkit-box;
         display: -ms-flexbox;
         display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
         flex-direction: column;
         gap: 3px;
         font-size: 14px;
@@ -1479,7 +1553,12 @@ main#productsContainer {
     }
     /* Базовые стили для .game-meta */
     .game-meta {
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
         flex-direction: column;
         gap: 3px;
         font-size: 14px;
@@ -1487,7 +1566,11 @@ main#productsContainer {
         position: relative;
     }
     .game-meta div {
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
         align-items: center;
         gap: 6px;
         margin-bottom: 0;
@@ -1499,7 +1582,11 @@ main#productsContainer {
         left: 0;
         right: 0;
         height: 30px;
+        background: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 1)));
+        background: -o-linear-gradient(top, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
         background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+        -webkit-transition: opacity 0.3s ease;
+        -o-transition: opacity 0.3s ease;
         transition: opacity 0.3s ease;
         pointer-events: none;
     }
@@ -1508,7 +1595,11 @@ main#productsContainer {
     }
     /* Стили кнопки */
     .game-meta-toggle {
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
         align-items: center;
         gap: 4px;
         margin-top: 8px;
@@ -1520,9 +1611,15 @@ main#productsContainer {
         cursor: pointer;
     }
     .game-meta-toggle svg {
+        -webkit-transition: -webkit-transform 0.3s ease;
+        transition: -webkit-transform 0.3s ease;
+        -o-transition: transform 0.3s ease;
         transition: transform 0.3s ease;
+        transition: transform 0.3s ease, -webkit-transform 0.3s ease;
     }
     .game-meta.expanded+.game-meta-toggle svg {
+        -webkit-transform: rotate(180deg);
+        -ms-transform: rotate(180deg);
         transform: rotate(180deg);
     }
     /* Блок покупки (липкий) */
@@ -1735,6 +1832,7 @@ main#productsContainer {
         background-position: center;
     }
     .products-grid {
+        display: -ms-grid;
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         gap: 1rem;
@@ -1750,7 +1848,9 @@ main#productsContainer {
     .game-cover img {
         width: 100%;
         height: 100%;
+        -o-object-fit: cover;
         object-fit: cover;
+        -o-object-position: center;
         object-position: center;
     }
     .modal-scroll-content {
@@ -1769,8 +1869,15 @@ main#productsContainer {
         overflow: hidden;
         border-radius: 10px;
         position: relative;
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
         flex-direction: column;
+        -webkit-box-pack: end;
+        -ms-flex-pack: end;
         justify-content: end;
     }
     .products-grid .product-card img {
@@ -1778,7 +1885,9 @@ main#productsContainer {
         z-index: 0;
         width: 100%;
         height: 100%;
+        -o-object-fit: cover;
         object-fit: cover;
+        -o-object-position: center top;
         object-position: center top;
     }
     .products-grid .product-card div {
@@ -1786,11 +1895,19 @@ main#productsContainer {
         z-index: 1;
         width: 100%;
         background-color: rgba(115, 118, 148, 0.3);
+        -webkit-backdrop-filter: blur(5px);
         backdrop-filter: blur(5px);
         padding: 10px 10px 8px;
         height: 80px;
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
         flex-direction: column;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
         justify-content: space-between;
     }
     .products-grid .product-card h4 {
@@ -1801,6 +1918,7 @@ main#productsContainer {
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
+        -o-text-overflow: ellipsis;
         text-overflow: ellipsis;
         word-break: break-word;
         margin-top: 0;
@@ -1820,6 +1938,8 @@ main#productsContainer {
         gap: 4px;
     }
     .game-meta div {
+        -webkit-box-align: start;
+        -ms-flex-align: start;
         align-items: start;
     }
     .description-section {
@@ -1844,7 +1964,7 @@ main#productsContainer {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    background: -webkit-gradient(linear, left top, left bottom, from(white), to(black));
     background: -o-linear-gradient(top, white, black);
+    background: -webkit-gradient(linear, left top, left bottom, from(white), to(black));
     background: linear-gradient(to bottom, white, black);
 }

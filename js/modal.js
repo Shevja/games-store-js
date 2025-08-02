@@ -177,7 +177,7 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
             <div class="description-content" id="${descriptionId}">
                 <p>${product.description || 'Описание отсутствует'}</p>
             </div>
-            <button class="read-more-btn" data-target="${descriptionId}">Больше</button>
+            <button class="read-more-btn" data-target="${descriptionId}">Ещё</button>
         </div>
         
     `;
@@ -282,9 +282,9 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
             </div>
             
         </div>
-        
-        <div class="modal_info_content">
-        ${mobileTabs}
+          ${mobileTabs}
+          <div class="modal_info_content">
+      
         
         <div class="modal-content-grid">
             <div class="main-content ${isMobile ? 'mobile-view' : ''}">
@@ -554,11 +554,11 @@ function initReadMoreButton(descId) {
     function toggleDescription() {
         if (descContainer.style.maxHeight === '70px') {
             descContainer.style.maxHeight = descContainer.scrollHeight + 'px';
-            btn.textContent = 'Меньше';
+            btn.textContent = 'Скрыть';
             descContainer.classList.add('expanded'); // Добавляем класс при раскрытии
         } else {
             descContainer.style.maxHeight = '70px';
-            btn.textContent = 'Больше';
+            btn.textContent = 'Ещё';
             descContainer.classList.remove('expanded'); // Удаляем класс при скрытии
         }
     }
@@ -577,14 +577,14 @@ function initGameMetaReadMore() {
         meta.dataset.originalHeight = meta.scrollHeight;
         
         // Если контент не превышает 70px - ничего не делаем
-        if (meta.scrollHeight <= 60) {
+        if (meta.scrollHeight <= 70) {
             meta.style.removeProperty('overflow');
             return;
         }
 
         // Добавляем класс и стили
         meta.classList.add('collapsible-meta');
-        meta.style.maxHeight = '60px';
+        meta.style.maxHeight = '70px';
         meta.style.overflow = 'hidden';
         meta.style.transition = 'max-height 0.3s ease';
         meta.style.position = 'relative';
@@ -594,7 +594,7 @@ function initGameMetaReadMore() {
         const btn = document.createElement('button');
         btn.className = 'read-more-btn';
         btn.innerHTML = `
-            Больше
+            Ещё
             
         `;
 
@@ -603,17 +603,17 @@ function initGameMetaReadMore() {
 
         // Обработчик клика
         const toggle = () => {
-            if (meta.style.maxHeight === '60px') {
+            if (meta.style.maxHeight === '70px') {
                 meta.style.maxHeight = `${meta.dataset.originalHeight}px`;
                 btn.innerHTML = `
-                    Меньше
+                    Скрыть
                    
                 `;
                 meta.classList.add('expanded');
             } else {
-                meta.style.maxHeight = '60px';
+                meta.style.maxHeight = '70px';
                 btn.innerHTML = `
-                    Больше
+                    Ещё
                  
                 `;
                 meta.classList.remove('expanded');
