@@ -1,19 +1,67 @@
+// Добавляем переменные для обработки свайпа
+let touchStartY = 0;
+let touchEndY = 0;
+const SWIPE_THRESHOLD = 100; // Минимальное расстояние свайпа для закрытия
+
 function openModalWindow() {
     document.body.style.overflow = 'hidden';
     elements.modal.classList.remove("hidden");
     elements.modal.classList.add("active");
+
+    // Добавляем обработчики свайпа
+    elements.modal.addEventListener('touchstart', handleTouchStart, { passive: true });
+    elements.modal.addEventListener('touchmove', handleTouchMove, { passive: false });
+    elements.modal.addEventListener('touchend', handleTouchEnd, { passive: true });
 }
 
 function closeModalWindow() {
+    // Удаляем обработчики свайпа
+    elements.modal.removeEventListener('touchstart', handleTouchStart);
+    elements.modal.removeEventListener('touchmove', handleTouchMove);
+    elements.modal.removeEventListener('touchend', handleTouchEnd);
+
     document.body.style.overflow = 'auto';
     elements.modal.classList.add("hidden");
     elements.modal.classList.remove("active");
+
+    // Останавливаем все видео при закрытии
+    document.querySelectorAll('video').forEach(video => {
+        video.pause();
+    });
 
     if (elements.container.innerHTML === "") {
         renderProducts();
     }
 }
 
+// Обработчики для свайпа
+function handleTouchStart(e) {
+    touchStartY = e.changedTouches[0].screenY;
+}
+
+function handleTouchMove(e) {
+    // Проверяем, что свайп идет вниз от верхней части экрана
+    if (window.scrollY === 0 && e.changedTouches[0].screenY > touchStartY) {
+        e.preventDefault(); // Блокируем скролл страницы
+        const deltaY = e.changedTouches[0].screenY - touchStartY;
+        elements.modal.style.transform = `translateY(${deltaY}px)`;
+        elements.modal.style.opacity = 1 - (deltaY / 300);
+    }
+}
+
+function handleTouchEnd(e) {
+    touchEndY = e.changedTouches[0].screenY;
+    const deltaY = touchEndY - touchStartY;
+
+    // Если свайп достаточно большой - закрываем модальное окно
+    if (deltaY > SWIPE_THRESHOLD) {
+        closeModalWindow();
+    } else {
+        // Возвращаем модальное окно на место
+        elements.modal.style.transform = 'translateY(0)';
+        elements.modal.style.opacity = 1;
+    }
+}
 async function showDetails(product) {
     if (isLoading) return;
     isLoading = true;
@@ -280,21 +328,18 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
 function initVideoPlayers() {
     // Обработчик для кнопки звука
     document.querySelector('.sound-toggle')?.addEventListener('click', function() {
-        const videos = document.querySelectorAll('.mobile-video-container video');
-        const isCurrentlyMuted = videos[0]?.muted;
+        isSoundEnabled = !isSoundEnabled;
+        const videos = document.querySelectorAll('video');
         
         // Переключаем состояние звука для всех видео
         videos.forEach(video => {
-            video.muted = !isCurrentlyMuted;
+            video.muted = !isSoundEnabled;
         });
         
         // Обновляем кнопку
-        this.classList.toggle('sound-on', !isCurrentlyMuted);
-        this.classList.toggle('sound-off', isCurrentlyMuted);
-        this.innerHTML = `<i class="fas fa-volume-${!isCurrentlyMuted ? 'up' : 'mute'}"></i>`;
-        
-        // Сохраняем настройку
-        localStorage.setItem('videoSoundEnabled', !isCurrentlyMuted);
+        this.classList.toggle('sound-on', isSoundEnabled);
+        this.classList.toggle('sound-off', !isSoundEnabled);
+        this.innerHTML = `<i class="fas fa-volume-${isSoundEnabled ? 'up' : 'mute'}"></i>`;
     });
 
     // Остальные обработчики видео
