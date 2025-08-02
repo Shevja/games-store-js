@@ -278,7 +278,7 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
         <div class="modal-header">
             <div class="game-cover-container">
                 ${mediaContent}
-                ${product.sale_product ? `<div class="discount-badge">-${product.sale_product}%</div>` : ''}
+                ${product.sale_product ? `<div class="discount-badge">-${product.prices.key.discounted_percentage}%</div>` : ''}
             </div>
             
         </div>
