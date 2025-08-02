@@ -63,32 +63,29 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
         metaInfo.push(`<div><strong>Жанры:</strong> ${product.categories.join(', ')}</div>`);
     }
     if (product.capabilities) metaInfo.push(`<div><strong>Возможности:</strong> ${product.capabilities}</div>`);
+
     // Создаем блок с языковой информацией
     const langInfo = [];
     if (product.voice_acting) langInfo.push(`<div><strong>Озвучка:</strong> ${product.voice_acting}</div>`);
     if (product.interface_ru) langInfo.push(`<div><strong>Интерфейс:</strong> ${product.interface_ru}</div>`);
     if (product.subtitles) langInfo.push(`<div><strong>Субтитры:</strong> ${product.subtitles}</div>`);
+
     // Создаем блок с системными требованиями
     const systemInfo = [];
     if (product.compatibility) systemInfo.push(`<div><strong>Совместимость:</strong> ${product.compatibility}</div>`);
 
-    // Слайдер для скриншотов
-    let screenshotsSlider = '';
+    // Скриншоты как простой список
+    let screenshotsContent = '';
     if (product.screenshots && product.screenshots.length) {
-        screenshotsSlider = `
+        screenshotsContent = `
         <div class="media-section">
             <h3>Скриншоты (${product.screenshots.length})</h3>
-            <div class="screenshots-slider">
-                <div class="slides-container">
-                    ${product.screenshots.map(img => `
-                        <div class="slide">
-                            <img src="${img}" loading="lazy" alt="Скриншот игры" />
-                        </div>
-                    `).join('')}
-                </div>
-                <button class="slider-nav prev"><i class="fas fa-chevron-left"></i></button>
-                <button class="slider-nav next"><i class="fas fa-chevron-right"></i></button>
-                <div class="slider-dots"></div>
+            <div class="screenshots-list">
+                ${product.screenshots.map(img => `
+                    <div class="screenshot-item">
+                        <img src="${img}" loading="lazy" alt="Скриншот игры" onclick="openFullscreenImage('${img}')" />
+                    </div>
+                `).join('')}
             </div>
         </div>`;
     }
@@ -147,6 +144,20 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
         </div>
     `;
     
+    // Game header info (перенесено в таб "Об игре")
+    const gameHeaderInfo = `
+        <div class="game-header-info">
+            <div class="game-meta">${metaInfo.join('')}</div>
+            <div class="game-actions">
+                <div class="price-display">
+                    <span class="final-price">${keyPrice}₽</span>
+                    ${product.sale_product ? `<span class="original-price">${Math.round(keyPrice * 100 / (100 - product.sale_product))}₽</span>` : ''}
+                </div>
+                
+            </div>
+        </div>
+    `;
+    
     // Определяем мобильное устройство
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
     const firstVideo = product.videos && product.videos.length > 0 ? product.videos[0] : null;
@@ -154,7 +165,7 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
     
     let isSoundEnabled = localStorage.getItem('videoSoundEnabled') !== 'false';
     
-     // Проверяем наличие русской озвучки
+    // Проверяем наличие русской озвучки
     const hasRussianVoice = product.interface_ru && 
                           (product.interface_ru.includes('русск') || 
                            product.interface_ru.includes('russian') ||
@@ -170,24 +181,20 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
     const overlayElements = `
     <div class="bottom_left">
         ${hasRussianVoice ? `
-            
-             <div class="voice-flag">
-            <img src="img/ru.svg" alt="Русская озвучка" title="Русская озвучка">
-        </div>
-    
+            <div class="voice-flag">
+                <img src="img/ru.svg" alt="Русская озвучка" title="Русская озвучка">
+            </div>
         ` : ''}
         
         ${isXboxSeriesCompatible ? '' : `
-        
-        <div class="xbox-icon">
-            <img src="img/xs.svg" alt="Xbox Series X/S" title="Не совместимо с Xbox Series X/S">
-        </div>
-       
+            <div class="xbox-icon">
+                <img src="img/xs.svg" alt="Xbox Series X/S" title="Не совместимо с Xbox Series X/S">
+            </div>
         `}
-         </div>
-        <div class="cover-price">
-            <span class="final-price">${keyPrice}₽</span>
-        </div>
+    </div>
+    <div class="cover-price">
+        <span class="final-price">${keyPrice}₽</span>
+    </div>
     `;
 
     // Создаем медиа-контент (обложка или видео для мобильных)
@@ -217,12 +224,21 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
                 <img src="${fallbackImage}" 
                      loading="lazy" 
                      alt="Обложка игры" 
-                     class="game-cover" />
+                     class="game-cover" 
+                     onclick="openFullscreenImage('${fallbackImage}')"/>
                 ${overlayElements}
             </div>
         `;
     }
-    
+
+    // Создаём табы для мобильной версии
+    const mobileTabs = isMobile ? `
+        <div class="mobile-tabs">
+            <button class="tab-button active" data-tab="about">Об игре</button>
+            <button class="tab-button" data-tab="screenshots">Скриншоты</button>
+        </div>
+    ` : '';
+
     // Формируем HTML
     elements.modalBody.innerHTML = `
         <div class="modal-header">
@@ -230,33 +246,50 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
                 ${mediaContent}
                 ${product.sale_product ? `<div class="discount-badge">-${product.sale_product}%</div>` : ''}
             </div>
-            <div class="game-header-info">
-                <h2>${product.title || 'Без названия'}</h2>
-                <div class="game-meta">${metaInfo.join('')}</div>
-                <div class="game-actions">
-                    <div class="price-display">
-                        <span class="final-price">${keyPrice}₽</span>
-                        ${product.sale_product ? `<span class="original-price">${Math.round(keyPrice * 100 / (100 - product.sale_product))}₽</span>` : ''}
-                    </div>
-                    <div class="sale-info">Акция действует до: ${endSaleDate}</div>
-                </div>
-            </div>
+            
         </div>
         
+        <div class="modal_info_content">
+        ${mobileTabs}
+        
         <div class="modal-content-grid">
-            <div class="main-content">
-                ${descriptionContent}
-                ${screenshotsSlider}
-                ${videosContent}
+            <div class="main-content ${isMobile ? 'mobile-view' : ''}">
+                <div class="tab-content about-tab ${isMobile ? 'active' : ''}">
+                <div class="game-title-wrapper">
+              <div class="game_title_img">
+                <img src="${product.image || (product.screenshots && product.screenshots[0]) || 'img/placeholder.jpg'}" 
+                     class="game-thumbnail"
+                     onclick="openFullscreenImage('${product.image || (product.screenshots && product.screenshots[0]) || 'img/placeholder.jpg'}')"/>
+                   </div>
+                     <div class="game_title_info">
+                     <h2>${product.title || 'Без названия'}</h2>
+                     <div class="sale-info">Акция действует до: ${endSaleDate}</div>
+                     </div>
+            </div>
+                    ${descriptionContent}
+                    ${gameHeaderInfo}
+                    <div class="info-block">
+                        <h3>Языковая информация</h3>
+                        ${langInfo.join('')}
+                    </div>
+                    <div class="info-block">
+                        <h3>Системные требования</h3>
+                        ${systemInfo.join('')}
+                    </div>
+                    ${!isMobile ? videosContent : ''}
+                </div>
+                
+                ${isMobile ? `
+                <div class="tab-content screenshots-tab">
+                    ${screenshotsContent}
+                    ${videosContent}
+                </div>
+                ` : `
+                ${screenshotsContent}
+                `}
             </div>
             
             <div class="sidebar">
-          
-                <div class="info-block">
-                    <h3>Системные требования</h3>
-                    ${systemInfo.join('')}
-                </div>
-                
                 <div class="purchase-options">
                     <h3>Варианты покупки</h3>
                     <div class="price-option selected" data-price="${keyPrice}">
@@ -294,11 +327,24 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
                 </div>
             </div>
         </div>
+        </div>
     `;
-    
-    // Инициализация слайдера
-    if (product.screenshots && product.screenshots.length > 1) {
-        initSlider();
+
+    // Добавляем обработчики для табов (только на мобильных)
+    if (isMobile) {
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                // Убираем активный класс у всех кнопок и контента
+                document.querySelectorAll('.tab-button').forEach(btn => 
+                    btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => 
+                    content.classList.remove('active'));
+                
+                // Добавляем активный класс к выбранной кнопке и контенту
+                button.classList.add('active');
+                document.querySelector(`.${button.dataset.tab}-tab`).classList.add('active');
+            });
+        });
     }
     
     // Инициализация кнопки "Подробнее"
@@ -317,6 +363,51 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
     
     // Обработчики вариантов покупки
     setupPriceOptionHandlers(product, keyPrice, uAccPrice, newAccPrice);
+}
+
+// Функция для открытия изображения на весь экран
+function openFullscreenImage(src) {
+    const fullscreenDiv = document.createElement('div');
+    fullscreenDiv.className = 'fullscreen-image';
+    fullscreenDiv.innerHTML = `
+        <img src="${src}" class="fullscreen-image-content">
+        <button class="close-fullscreen">&times;</button>
+    `;
+    document.body.appendChild(fullscreenDiv);
+    
+    // Обработчик закрытия
+    fullscreenDiv.querySelector('.close-fullscreen').addEventListener('click', () => {
+        document.body.removeChild(fullscreenDiv);
+    });
+    
+    // Закрытие по клику вне изображения
+    fullscreenDiv.addEventListener('click', (e) => {
+        if (e.target === fullscreenDiv) {
+            document.body.removeChild(fullscreenDiv);
+        }
+    });
+}
+// Функция для открытия изображения на весь экран
+function openFullscreenImage(src) {
+    const fullscreenDiv = document.createElement('div');
+    fullscreenDiv.className = 'fullscreen-image';
+    fullscreenDiv.innerHTML = `
+        <img src="${src}" class="fullscreen-image-content">
+        <button class="close-fullscreen">&times;</button>
+    `;
+    document.body.appendChild(fullscreenDiv);
+    
+    // Обработчик закрытия
+    fullscreenDiv.querySelector('.close-fullscreen').addEventListener('click', () => {
+        document.body.removeChild(fullscreenDiv);
+    });
+    
+    // Закрытие по клику вне изображения
+    fullscreenDiv.addEventListener('click', (e) => {
+        if (e.target === fullscreenDiv) {
+            document.body.removeChild(fullscreenDiv);
+        }
+    });
 }
 function initVideoPlayers() {
     // Обработчик для кнопки звука
@@ -413,31 +504,43 @@ function initSlider() {
         slideInterval = setInterval(() => goToSlide(currentSlide + 1), 5000);
     });
 }
-
 function initReadMoreButton(descId) {
     const descContainer = document.getElementById(descId);
     const btn = document.querySelector(`[data-target="${descId}"]`);
     
-    // Проверяем, нужно ли показывать кнопку
-    descContainer.style.maxHeight = '140px';
+    // Устанавливаем начальные стили
+    descContainer.style.maxHeight = '70px';
     descContainer.style.overflow = 'hidden';
     descContainer.style.transition = 'max-height 0.3s ease';
+    descContainer.style.cursor = 'pointer';
     
     // Если контент не превышает максимальную высоту, скрываем кнопку
     if (descContainer.scrollHeight <= descContainer.clientHeight) {
         btn.style.display = 'none';
+        descContainer.style.cursor = 'auto';
         return;
     }
     
-    btn.addEventListener('click', function() {
-        if (descContainer.style.maxHeight === '140px') {
+    // Функция для переключения состояния
+    function toggleDescription() {
+        if (descContainer.style.maxHeight === '70px') {
             descContainer.style.maxHeight = descContainer.scrollHeight + 'px';
             btn.textContent = 'Свернуть';
+            descContainer.classList.add('expanded'); // Добавляем класс при раскрытии
         } else {
-            descContainer.style.maxHeight = '140px';
+            descContainer.style.maxHeight = '70px';
             btn.textContent = 'Подробнее';
+            descContainer.classList.remove('expanded'); // Удаляем класс при скрытии
         }
+    }
+    
+    // Обработчики событий
+    btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        toggleDescription();
     });
+    
+    descContainer.addEventListener('click', toggleDescription);
 }
 
 function setupPriceOptionHandlers(product, keyPrice, uAccPrice, newAccPrice) {

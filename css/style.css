@@ -1,3 +1,4 @@
+@import "https://sethburkart123.github.io/sf-pro-fonts/fonts.css";
 :root {
     /* Основные серые тона */
     --primary-150: #F0F0F0;
@@ -58,7 +59,7 @@ html {
 
 body {
     margin: 0;
-    font-family: sans-serif;
+    font-family: 'SF Pro Display', sans-serif;
     background: var(--bg);
     color: var(--text);
     overflow-x: hidden;
@@ -583,7 +584,6 @@ main#productsContainer {
     gap: 20px;
     margin-bottom: 20px;
     padding-bottom: 20px;
-    border-bottom: 1px solid var(--primary-700);
 }
 
 .game-cover {
@@ -592,6 +592,147 @@ main#productsContainer {
     min-width: 250px;
     border-radius: 8px;
     overflow: hidden;
+}
+
+
+/* Стили для миниатюры игры */
+
+.game-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.game_title_img {
+    width: 80px;
+    min-width: 80px;
+    height: 80px;
+    overflow: hidden;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.game-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.2s;
+}
+
+.game_title_img:hover .game-thumbnail {
+    transform: scale(1.05);
+}
+
+.game_title_info h2 {
+    font-size: 18px;
+}
+
+
+/* Стили для полноэкранного изображения */
+
+.fullscreen-image {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+}
+
+.fullscreen-image-content {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+}
+
+.close-fullscreen {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+
+/* Стили для мобильных табов */
+
+.mobile-tabs {
+    display: flex;
+    justify-content: start;
+    gap: 60px;
+    margin-left: 10px;
+    padding: 0 9px;
+    align-items: center;
+    position: relative;
+}
+
+.tab-button {
+    text-decoration: none;
+    display: block;
+    font-size: .85rem;
+    line-height: 1.06rem;
+    font-weight: 700;
+    width: max-content;
+    padding-bottom: 4px;
+    color: #6b7280;
+    border: none;
+    outline: none;
+    background: none;
+    cursor: pointer;
+    transition: .3s;
+    font-size: inherit;
+    margin-top: 20px;
+}
+
+.tab-button.active {
+    color: #fff;
+    border-bottom: 2px solid #fff;
+}
+
+.tab-content {
+    display: none;
+    padding-top: 15px;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.screenshot-item {
+    width: 100%;
+}
+
+.screenshot-item img {
+    width: 100%;
+}
+
+.modal_info_content {
+    background: var(--primary-850);
+    position: relative;
+    z-index: 199;
+}
+
+
+/* Адаптация для мобильных */
+
+@media (max-width: 768px) {
+    .modal-content-grid {
+        flex-direction: column;
+    }
+    .main-content.mobile-view {
+        order: 1;
+    }
+    .sidebar {
+        order: 2;
+    }
 }
 
 .game-cover img {
@@ -1047,7 +1188,7 @@ main#productsContainer {
 }
 
 .xbox-icon {
-    height: 20px;
+    height: 30px;
 }
 
 .xbox-icon img {
@@ -1059,14 +1200,16 @@ main#productsContainer {
     bottom: 10px;
     right: 10px;
     z-index: 5;
-    border-radius: 4px;
-    padding: 4px 8px;
+    background: #232222c2;
+    border-radius: 1.5rem;
+    padding: 7px 16px;
+    width: max-content;
 }
 
 .cover-price .final-price {
-    color: var(--accent);
-    font-size: 20px;
-    font-weight: bold;
+    color: #fff;
+    font-weight: 600;
+    font-size: 18px;
 }
 
 
@@ -1155,17 +1298,6 @@ main#productsContainer {
 /* Для мобильных - адаптация */
 
 @media (max-width: 768px) {
-    .modal-header {
-        flex-direction: column;
-    }
-    .game-cover-container {
-        width: 100%;
-        margin-right: 0;
-        margin-bottom: 15px;
-    }
-}
-
-@media (max-width: 768px) {
     .modal-content {
         position: fixed;
         bottom: 0;
@@ -1220,7 +1352,8 @@ main#productsContainer {
     }
     /* Шапка модалки */
     .modal-header {
-        position: relative;
+        position: sticky;
+        top: 0;
         padding: 0;
         margin: 0;
     }
@@ -1333,46 +1466,6 @@ main#productsContainer {
         -ms-flex-align: center;
         align-items: center;
         gap: 6px;
-    }
-    /* Табы */
-    .modal-tabs {
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        border-bottom: 1px solid var(--primary-700);
-        margin: 24px 0 20px;
-        position: sticky;
-        top: 0;
-        background: var(--primary-850);
-        padding-top: 8px;
-        z-index: 5;
-    }
-    .modal-tab {
-        padding: 12px 0;
-        margin-right: 24px;
-        font-weight: 600;
-        position: relative;
-        opacity: 0.6;
-        font-size: 15px;
-        -webkit-transition: opacity 0.2s;
-        -o-transition: opacity 0.2s;
-        transition: opacity 0.2s;
-    }
-    .modal-tab:last-child {
-        margin-right: 0;
-    }
-    .modal-tab.active {
-        opacity: 1;
-    }
-    .modal-tab.active:after {
-        content: '';
-        position: absolute;
-        bottom: -1px;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: var(--accent);
-        border-radius: 3px 3px 0 0;
     }
     /* Блок покупки (липкий) */
     .purchase-footer {
