@@ -63,7 +63,11 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
         metaInfo.push(`<div><strong>Жанры:</strong> ${product.categories.join(', ')}</div>`);
     }
     if (product.capabilities) metaInfo.push(`<div><strong>Возможности:</strong> ${product.capabilities}</div>`);
-
+    // Создаем блок с языковой информацией
+    const langInfo = [];
+    if (product.voice_acting) langInfo.push(`<div><strong>Озвучка:</strong> ${product.voice_acting}</div>`);
+    if (product.interface_ru) langInfo.push(`<div><strong>Интерфейс:</strong> ${product.interface_ru}</div>`);
+    if (product.subtitles) langInfo.push(`<div><strong>Субтитры:</strong> ${product.subtitles}</div>`);
     // Создаем блок с системными требованиями
     const systemInfo = [];
     if (product.compatibility) systemInfo.push(`<div><strong>Совместимость:</strong> ${product.compatibility}</div>`);
@@ -150,43 +154,72 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
     
     let isSoundEnabled = localStorage.getItem('videoSoundEnabled') !== 'false';
     
+     // Проверяем наличие русской озвучки
+    const hasRussianVoice = product.interface_ru && 
+                          (product.interface_ru.includes('русск') || 
+                           product.interface_ru.includes('russian') ||
+                           product.interface_ru.toLowerCase().includes('рус'));
+
+    // Проверяем совместимость с Xbox Series X/S
+    const isXboxSeriesCompatible = product.compatibility && 
+                                 (product.compatibility.includes('Xbox Series') || 
+                                  product.compatibility.includes('XSX') ||
+                                  product.compatibility.includes('XSS'));
+
+    // Создаём HTML для элементов поверх обложки
+    const overlayElements = `
+    <div class="bottom_left">
+        ${hasRussianVoice ? `
+            
+             <div class="voice-flag">
+            <img src="img/ru.svg" alt="Русская озвучка" title="Русская озвучка">
+        </div>
+    
+        ` : ''}
+        
+        ${isXboxSeriesCompatible ? '' : `
+        
+        <div class="xbox-icon">
+            <img src="img/xs.svg" alt="Xbox Series X/S" title="Не совместимо с Xbox Series X/S">
+        </div>
+       
+        `}
+         </div>
+        <div class="cover-price">
+            <span class="final-price">${keyPrice}₽</span>
+        </div>
+    `;
+
     // Создаем медиа-контент (обложка или видео для мобильных)
     let mediaContent = '';
     if (isMobile && firstVideo) {
         mediaContent = `
             <div class="mobile-video-container">
                 <video autoplay loop ${isSoundEnabled ? '' : 'muted'} playsinline
-                    poster="${product.image || 'img/placeholder.jpg'}"
+                    poster="${product.image || (product.screenshots && product.screenshots[0]) || 'img/placeholder.jpg'}"
                     class="game-cover">
                     ${!isHLS ? `<source src="${firstVideo}" type="video/mp4">` : ''}
                     Ваш браузер не поддерживает видео.
                 </video>
+                ${overlayElements}
                 <button class="sound-toggle ${isSoundEnabled ? 'sound-on' : 'sound-off'}">
                     <i class="fas fa-volume-${isSoundEnabled ? 'up' : 'mute'}"></i>
                 </button>
-                ${isHLS ? `
-                <script>
-                    (function() {
-                        const video = document.querySelector('.mobile-video-container video');
-                        if(Hls.isSupported()) {
-                            const hls = new Hls();
-                            hls.loadSource('${firstVideo}');
-                            hls.attachMedia(video);
-                        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                            video.src = '${firstVideo}';
-                        }
-                        video.play().catch(e => console.log('Autoplay error:', e));
-                    })();
-                </script>
-                ` : ''}
             </div>
         `;
     } else {
+        const fallbackImage = (product.screenshots && product.screenshots.length > 0) 
+            ? product.screenshots[0] 
+            : 'img/placeholder.jpg';
+        
         mediaContent = `
-            <img src="${product.image || 'img/placeholder.jpg'}" 
-                 loading="lazy" 
-                 alt="Обложка игры" 
-                 class="game-cover" />
+            <div class="game-cover-container">
+                <img src="${fallbackImage}" 
+                     loading="lazy" 
+                     alt="Обложка игры" 
+                     class="game-cover" />
+                ${overlayElements}
+            </div>
         `;
     }
     
@@ -218,6 +251,7 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
             </div>
             
             <div class="sidebar">
+          
                 <div class="info-block">
                     <h3>Системные требования</h3>
                     ${systemInfo.join('')}
