@@ -1,30 +1,83 @@
+// Функция для получения минимальной цены продукта
+function getProductPrice(product) {
+    try {
+        // Проверяем наличие объекта prices
+        if (!product || !product.prices || typeof product.prices !== 'object') {
+            return "—";
+        }
+
+        // Собираем все цены, исключая невалидные
+        const validPrices = [];
+
+        // Проверяем каждый тип цены
+        const priceTypes = ['key', 'u_acc', 'new_acc'];
+        priceTypes.forEach(type => {
+            if (product.prices[type] &&
+                typeof product.prices[type].price === 'number' &&
+                product.prices[type].price > 0) {
+                validPrices.push(product.prices[type].price);
+            }
+        });
+
+        // Если нет валидных цен
+        if (validPrices.length === 0) {
+            return "—";
+        }
+
+        // Находим минимальную цену
+        const minPrice = Math.min(...validPrices);
+        return minPrice.toLocaleString('ru-RU');
+    } catch (error) {
+        console.error("Ошибка при получении цены:", error);
+        return "—";
+    }
+}
+
 function renderProducts() {
-    if (isLoading) return;
+    if (isLoading) {
+        showLoader();
+        return;
+    }
 
     elements.container.innerHTML = "";
 
-    if (filteredProducts.length === 0) {
+    // Проверяем, есть ли товары для отображения
+    if (!filteredProducts || filteredProducts.length === 0) {
         elements.container.innerHTML = currentSearchQuery.length >= 3 ?
-            `<p>По запросу "${currentSearchQuery}" ничего не найдено</p>` :
-            "<p>Ничего не найдено</p>";
+            `<p class="no-results">По запросу "${currentSearchQuery}" ничего не найдено</p>` :
+            '<p class="no-results">Товары не найдены</p>';
+        hideLoader();
         return;
     }
+
 
     const productsWrapper = document.createElement("div");
     productsWrapper.className = `products-${currentView}`;
 
-    // Виртуализация - рендерим только нужные элементы
-    const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
-    const endIdx = Math.min(startIdx + ITEMS_PER_PAGE, filteredProducts.length);
+    // Рендерим товары
+    filteredProducts.forEach(product => {
+        try {
+            // Получаем цену для товара
+            const price = getProductPrice(product);
 
-    for (let i = startIdx; i < endIdx; i++) {
-        const product = filteredProducts[i];
-        const price = getProductPrice(product);
-        const card = createProductCard(product, price);
-        productsWrapper.appendChild(card);
+            // Проверяем, что товар валиден перед созданием карточки
+            if (product && product.title && (product.image || (product.screenshots && product.screenshots[0]))) {
+                const card = createProductCard(product, price);
+                productsWrapper.appendChild(card);
+            }
+        } catch (error) {
+            console.error("Ошибка при создании карточки товара:", error);
+        }
+    });
+
+    // Проверяем, есть ли что отображать
+    if (productsWrapper.children.length === 0) {
+        elements.container.innerHTML = '<p class="no-results">Нет товаров для отображения</p>';
+    } else {
+        elements.container.appendChild(productsWrapper);
     }
 
-    elements.container.appendChild(productsWrapper);
+    hideLoader();
 }
 
 function createProductCard(product, price) {
@@ -44,19 +97,17 @@ function createProductCard(product, price) {
 
     // Элементы для отображения поверх карточки
     const overlayElements = `
-       
-            ${hasRussianVoice ? `
-                <div class="voice-flag">
-                    <img src="img/ru.svg" alt="Русская озвучка" title="Русская озвучка">
-                </div>
-            ` : ''}
-            
-            ${product.sale_product ? `
-                <div class="discount-badge">
-                    -${product.prices.key.discounted_percentage}%
-                </div>
-            ` : ''}
-    
+        ${hasRussianVoice ? `
+            <div class="voice-flag">
+                <img src="img/ru.svg" alt="Русская озвучка" title="Русская озвучка">
+            </div>
+        ` : ''}
+        
+        ${product.sale_product ? `
+            <div class="discount-badge">
+                -${product.prices.key.discounted_percentage}%
+            </div>
+        ` : ''}
     `;
 
     if (currentView === 'grid') {
@@ -80,7 +131,8 @@ function createProductCard(product, price) {
         `;
     } else {
         card.innerHTML = `
-            <h4>${title} <p class="product-price">${priceText} ${product.sale_product ? `<span class="original-price">${product.full_price}₽</span>` : ''}</p></h4>
+            <h4>${title}</h4>
+            <p class="product-price">${priceText} ${product.sale_product ? `<span class="original-price">${product.full_price}₽</span>` : ''}</p>
         `;
     }
 

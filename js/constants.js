@@ -1,9 +1,6 @@
 const API_BASE = "https://api.xbox-rent.ru/api-sale";
 const ITEMS_PER_PAGE = 12;
 const INITIAL_LOAD_LIMIT = 12;
-const CACHE_KEY = 'xbox_rent_products_cache';
-const CACHE_EXPIRY_HOURS = 3; // Частота обновления кеша (в часах)
-
 
 // Глобальные переменные
 let allProducts = [];
