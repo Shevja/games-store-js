@@ -28,21 +28,50 @@ async function showDetails(product) {
     openModalWindow();
 
     try {
-        // Проверяем кэш перед загрузкой
-        if (!product.description || !product.prices) {
-            const response = await fetch(`${API_BASE}/game_id/${product.product_id}`);
-            product = await response.json();
+        // Проверяем, что product содержит необходимые данные
+        if (!product || !product.product_id) {
+            throw new Error("Неверные данные продукта");
         }
 
-        const prices = product.prices || {};
-        const keyPrice = (prices.key && prices.key.price !== undefined && prices.key.price !== null) ? prices.key.price : 876;
-        const uAccPrice = (prices.u_acc && prices.u_acc.price !== undefined && prices.u_acc.price !== null) ? prices.u_acc.price : 650;
-        const newAccPrice = (prices.new_acc && prices.new_acc.price !== undefined && prices.new_acc.price !== null) ? prices.new_acc.price : 549;
+        // Всегда загружаем полные данные по продукту
+        const response = await fetch(`${API_BASE}/game_id/${product.product_id}`);
+        const fullProductData = await response.json();
 
-        renderModalContent(product, keyPrice, uAccPrice, newAccPrice);
+        if (!fullProductData) {
+            throw new Error("Не удалось загрузить данные продукта");
+        }
+
+        // Проверяем наличие обязательных полей
+        if (!fullProductData.prices) {
+            fullProductData.prices = {
+                key: { price: 0 },
+                u_acc: { price: 0 },
+                new_acc: { price: 0 }
+            };
+        }
+
+        const prices = fullProductData.prices;
+        const keyPrice = (prices && prices.key && prices.key.price !== undefined) ? prices.key.price : 0;
+        const uAccPrice = (prices && prices.u_acc && prices.u_acc.price !== undefined) ? prices.u_acc.price : 0;
+        const newAccPrice = (prices && prices.new_acc && prices.new_acc.price !== undefined) ? prices.new_acc.price : 0;
+
+        // Добавляем fallback для описания
+        if (!fullProductData.description) {
+            fullProductData.description = "Описание отсутствует";
+        }
+
+        renderModalContent(fullProductData, keyPrice, uAccPrice, newAccPrice);
     } catch (error) {
         console.error("Details error:", error);
-        elements.modalBody.innerHTML = `<p>Ошибка загрузки данных: ${error.message}</p>`;
+        elements.modalBody.innerHTML = `
+            <div class="error-message">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Ошибка загрузки данных: ${error.message}</p>
+                <button class="retry-button" onclick="showDetails(${JSON.stringify(product).replace(/"/g, '&quot;')})">
+                    Попробовать снова
+                </button>
+            </div>
+        `;
     } finally {
         isLoading = false;
         hideLoader();

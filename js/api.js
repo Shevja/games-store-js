@@ -1,46 +1,57 @@
-async function loadGames(isInitialLoad = false) {
-    if (gamesLoaded) return;
-
+async function loadGames(page = 1) {
     try {
-        const limit = isInitialLoad ? INITIAL_LOAD_LIMIT : 1000;
-        const response = await fetch(`${API_BASE}/games/sales/?limit=${limit}`);
+        const offset = (page - 1) * ITEMS_PER_PAGE;
+        const response = await fetch(`${API_BASE}/games/sales/?offset=${offset}&limit=${ITEMS_PER_PAGE}`);
         const data = await response.json();
 
+        // Сохраняем данные пагинации
+        dataCache.pagination = {
+            count: data.count,
+            next: data.next,
+            previous: data.previous
+        };
+
+        // Обновляем продукты
         dataCache.games = data.results || [];
-        allProducts = [...allProducts, ...dataCache.games.map(item => ({...item, type: 'games' }))];
+        allProducts = dataCache.games.map(item => ({...item, type: 'games' }));
 
-        elements.gamesCount.textContent = dataCache.games.length;
-        gamesLoaded = isInitialLoad; // Полная загрузка только если не initial
+        elements.gamesCount.textContent = data.count || 0;
 
-        // Если это не первоначальная загрузка, обновляем отображение
-        if (!isInitialLoad && currentType === 'games') {
-            filterProducts();
-            renderProducts();
-        }
+        // Обновляем пагинацию
+        updatePagination(data.count, page);
+
+        // Рендерим продукты
+        renderProducts();
     } catch (error) {
         console.error("Games load error:", error);
     }
 }
 
-async function loadDLC(isInitialLoad = false) {
-    if (dlcLoaded) return;
-
+async function loadDLC(page = 1) {
     try {
-        const response = await fetch(`${API_BASE}/games/dlc`);
+        const offset = (page - 1) * ITEMS_PER_PAGE;
+        const response = await fetch(`${API_BASE}/games/dlc/?offset=${offset}&limit=${ITEMS_PER_PAGE}`);
         const data = await response.json();
 
+        // Сохраняем данные пагинации
+        dataCache.pagination = {
+            count: data.count,
+            next: data.next,
+            previous: data.previous
+        };
+
         // Обработка разных форматов ответа
-        const dlcItems = Array.isArray(data) ? data : (data && data.results || []);
+        const dlcItems = Array.isArray(data.results) ? data.results : [];
         dataCache.dlc = dlcItems;
-        allProducts = [...allProducts, ...dataCache.dlc.map(item => ({...item, type: 'dlc' }))];
+        allProducts = dlcItems.map(item => ({...item, type: 'dlc' }));
 
-        elements.dlcCount.textContent = dlcItems.length;
-        dlcLoaded = true;
+        elements.dlcCount.textContent = data.count || 0;
 
-        if (!isInitialLoad && currentType === 'dlc') {
-            filterProducts();
-            renderProducts();
-        }
+        // Обновляем пагинацию
+        updatePagination(data.count, page);
+
+        // Рендерим продукты
+        renderProducts();
     } catch (error) {
         console.error("DLC load error:", error);
     }
@@ -49,14 +60,8 @@ async function loadDLC(isInitialLoad = false) {
 async function loadInitialData() {
     try {
         showLoader();
-
-        // Параллельная загрузка первых данных
-        await Promise.all([
-            loadGames(true),
-            loadDLC(true)
-        ]);
-
-        filterProducts();
+        await loadGames(1); // Загружаем первую страницу игр
+        hideLoader();
     } catch (error) {
         console.error("Initial load error:", error);
         showError();

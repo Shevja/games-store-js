@@ -16,15 +16,8 @@ function setupEventListeners() {
         currentSearchQuery = '';
         elements.searchInput.value = '';
 
-        if (!gamesLoaded) {
-            showLoader();
-            await loadGames();
-            hideLoader();
-        }
-
         updateActiveTab();
-        filterProducts();
-        renderProducts();
+        await loadGames(currentPage);
     });
 
     elements.dlcBtn.addEventListener("click", async() => {
@@ -35,15 +28,8 @@ function setupEventListeners() {
         currentSearchQuery = '';
         elements.searchInput.value = '';
 
-        if (!dlcLoaded) {
-            showLoader();
-            await loadDLC();
-            hideLoader();
-        }
-
         updateActiveTab();
-        filterProducts();
-        renderProducts();
+        await loadDLC(currentPage);
     });
 
     // Поиск
@@ -53,8 +39,8 @@ function setupEventListeners() {
         currentSearchQuery = e.target.value.trim();
 
         searchTimer = setTimeout(() => {
-            filterProducts();
-            renderProducts();
+            // Если API поддерживает поиск, можно добавить параметр search
+            loadDataForCurrentType(1);
         }, 300);
     });
 
@@ -62,19 +48,33 @@ function setupEventListeners() {
     elements.prevPage.addEventListener("click", () => {
         if (currentPage > 1) {
             currentPage--;
-            renderProducts();
-            updatePagination(filteredProducts.length);
+            loadDataForCurrentType(currentPage);
         }
     });
 
     elements.nextPage.addEventListener("click", () => {
-        const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+        const totalPages = Math.ceil((dataCache.pagination && dataCache.pagination.count ? dataCache.pagination.count : 0) / ITEMS_PER_PAGE);
         if (currentPage < totalPages) {
             currentPage++;
-            renderProducts();
-            updatePagination(filteredProducts.length);
+            loadDataForCurrentType(currentPage);
         }
     });
+
+    // Новая функция для загрузки данных в зависимости от текущего типа
+    async function loadDataForCurrentType(page) {
+        showLoader();
+        try {
+            if (currentType === 'games') {
+                await loadGames(page);
+            } else {
+                await loadDLC(page);
+            }
+        } catch (error) {
+            console.error("Error loading data:", error);
+        } finally {
+            hideLoader();
+        }
+    }
 
     // Виды отображения
     elements.viewCards.addEventListener("click", () => {
@@ -106,9 +106,10 @@ function setupEventListeners() {
         const card = e.target.closest(".product-card");
         if (card && !isLoading) {
             const index = Array.from(card.parentElement.children).indexOf(card);
-            const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
-            const product = filteredProducts[startIdx + index];
-            showDetails(product);
+            const product = allProducts[index]; // Теперь allProducts содержит только текущую страницу
+            if (product) {
+                showDetails(product);
+            }
         }
     });
 }

@@ -42,7 +42,7 @@ function renderProducts() {
     elements.container.innerHTML = "";
 
     // Проверяем, есть ли товары для отображения
-    if (!filteredProducts || filteredProducts.length === 0) {
+    if (!allProducts || allProducts.length === 0) {
         elements.container.innerHTML = currentSearchQuery.length >= 3 ?
             `<p class="no-results">По запросу "${currentSearchQuery}" ничего не найдено</p>` :
             '<p class="no-results">Товары не найдены</p>';
@@ -50,17 +50,13 @@ function renderProducts() {
         return;
     }
 
-
     const productsWrapper = document.createElement("div");
     productsWrapper.className = `products-${currentView}`;
 
-    // Рендерим товары
-    filteredProducts.forEach(product => {
+    // Рендерим товары (теперь allProducts содержит только текущую страницу)
+    allProducts.forEach(product => {
         try {
-            // Получаем цену для товара
             const price = getProductPrice(product);
-
-            // Проверяем, что товар валиден перед созданием карточки
             if (product && product.title && (product.image || (product.screenshots && product.screenshots[0]))) {
                 const card = createProductCard(product, price);
                 productsWrapper.appendChild(card);
@@ -70,13 +66,7 @@ function renderProducts() {
         }
     });
 
-    // Проверяем, есть ли что отображать
-    if (productsWrapper.children.length === 0) {
-        elements.container.innerHTML = '<p class="no-results">Нет товаров для отображения</p>';
-    } else {
-        elements.container.appendChild(productsWrapper);
-    }
-
+    elements.container.appendChild(productsWrapper);
     hideLoader();
 }
 
