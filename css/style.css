@@ -1769,17 +1769,7 @@ main#productsContainer {
         transform: rotate(180deg);
     }
     /* Блок покупки (липкий) */
-    .purchase-footer {
-        background: var(--primary-850);
-        padding: 16px 20px 20px;
-        border-top: 1px solid var(--primary-700);
-        position: sticky;
-        bottom: 0;
-        z-index: 10;
-        -webkit-backdrop-filter: blur(5px);
-        backdrop-filter: blur(5px);
-    }
-    .price-options {
+    .purchase-variants {
         display: -webkit-box;
         display: -ms-flexbox;
         display: flex;
@@ -1791,46 +1781,70 @@ main#productsContainer {
         scroll-snap-type: x mandatory;
         padding-right: 20px;
     }
-    .price-option {
-        scroll-snap-align: start;
-        min-width: 65%;
-        background: var(--primary-750);
-        border-radius: 12px;
-        padding: 8px 12px;
-        border: 1px solid var(--primary-650);
-        -webkit-transition: all 0.2s;
-        -o-transition: all 0.2s;
-        transition: all 0.2s;
+    .variant-btn {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 5px;
+        border: 1px solid rgb(108, 108, 108);
+        border-radius: .75rem;
+        transition: .3s ease;
+        text-align: center;
+        color: #fff;
+        background: transparent;
     }
-    .price-option.selected {
+    .variant-btn.selected {
         border-color: var(--success);
         background: var(--primary-700);
         -webkit-box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     }
-    .option-title {
-        font-size: 13px;
-        opacity: 0.9;
-        display: block;
+    .variant-price-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 2px;
     }
-    .option-price {
-        font-size: 18px;
-        font-weight: 800;
-        display: block;
-        margin-bottom: 4px;
+    .variant-price {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--accent);
     }
-    .option-desc {
-        font-size: 12px;
+    .variant-original-price {
+        font-size: 14px;
+        text-decoration: line-through;
         opacity: 0.7;
-        display: block;
-        line-height: 1.4;
+        color: var(--text-secondary);
+    }
+    .variant-discount {
+        background: var(--danger);
+        color: white;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 2px 6px;
+        border-radius: 4px;
+    }
+    /* Для вашего оригинального стиля */
+    .variant-discount {
+        background: var(--danger);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 800;
+        padding: 2px 6px;
+        border-radius: 10px;
+        line-height: 1.2;
     }
     /* Кнопка покупки */
     .buy-button {
+        /* position: fixed;
+        bottom: 10px;
+        left: 50%;
+        transform: translate(-50%, 0); */
         width: 100%;
         padding: 18px;
         background: var(--success);
-        color: var(#fff);
+        color: #fff;
         border: none;
         border-radius: 14px;
         font-weight: 700;
@@ -1851,10 +1865,26 @@ main#productsContainer {
         transition: transform 0.2s, background 0.2s;
         transition: transform 0.2s, background 0.2s, -webkit-transform 0.2s;
     }
-    .buy-button:active {
+    .buy-button:disabled {
+        background: var(--primary-650);
+        cursor: not-allowed;
+        opacity: 0.8;
+    }
+    .buy-button:active:not(:disabled) {
         -webkit-transform: scale(0.98);
         -ms-transform: scale(0.98);
         transform: scale(0.98);
+    }
+    /* Стили для футера с вариантами покупки */
+    .purchase-footer {
+        background: var(--primary-850);
+        padding: 16px 20px 20px;
+        border-top: 1px solid var(--primary-700);
+        position: sticky;
+        bottom: 0;
+        z-index: 10;
+        -webkit-backdrop-filter: blur(5px);
+        backdrop-filter: blur(5px);
     }
     /* Медиа-контент */
     .media-section {

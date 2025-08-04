@@ -241,24 +241,38 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
         Math.min(...availablePrices.map(p => p.price)) : 
         null;
 
-    // Генерируем варианты покупки
-     let priceOptionsHTML = '';
-    availablePrices.forEach((priceObj, index) => {
-        const isMinPrice = priceObj.price === minPrice;
-        const optionId = `option-${Date.now()}-${index}`; // Уникальный ID для каждого варианта
-        priceOptionsHTML += `
-            <div class="price-option ${isMinPrice ? 'selected' : ''}" data-price="${priceObj.price}" data-type="${priceObj.type}">
-                <input type="radio" name="priceOption" id="${optionId}" ${isMinPrice ? 'checked' : ''}>
-                <label for="${optionId}" class="price-option-label">
-                    <span class="option-title">${priceObj.title}</span>
-                    <span class="option-price">${priceObj.price}₽
-                      
-                    </span>
-                    <span class="option-desc">${priceObj.desc}</span>
-                </label>
-            </div>
-        `;
-    });
+  let priceOptionsHTML = `
+    <div class="purchase-variants">
+        ${availablePrices.map((priceObj, index) => {
+            const isMinPrice = priceObj.price === minPrice;
+            const discountPercentage = product.prices[priceObj.type].discounted_percentage;
+            const hasDiscount = discountPercentage > 0;
+            
+            const priceDisplay = hasDiscount ? `
+                <div class="variant-price-wrapper">
+                    <span class="variant-price">${priceObj.price}₽</span>
+                    <span class="variant-discount">-${discountPercentage}%</span>
+                </div>
+            ` : `
+                <div class="variant-price-wrapper">
+                    <span class="variant-price">${priceObj.price}₽</span>
+                </div>
+            `;
+            
+            return `
+                <button class="variant-btn ${isMinPrice ? 'selected' : ''}" 
+                        data-price="${priceObj.price}" 
+                        data-type="${priceObj.type}">
+                    <span class="variant-title">${priceObj.title}</span>
+                    ${priceDisplay}
+                </button>
+            `;
+        }).join('')}
+    </div>
+    <button class="buy-button" id="modalBuyButton">
+        ${availablePrices.length > 0 ? `Выберите вариант покупки` : 'Нет доступных вариантов'}
+    </button>
+`;
 
 
     // Если нет доступных вариантов
@@ -336,16 +350,9 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
     // Вставляем HTML вариантов покупки
   const purchaseOptionsHTML = `
         <div class="purchase-options">
-            <h3>Варианты покупки</h3>
+          
             ${priceOptionsHTML}
-            ${availablePrices.length > 0 ? `
-                <button class="buy-button" id="modalBuyButton">
-                    <i class="fas fa-shopping-cart"></i> Купить за ${minPrice}₽
-                </button>
-                <div class="secure-info">
-                    <i class="fas fa-shield-alt"></i> Безопасная оплата и гарантия возврата
-                </div>
-            ` : ''}
+            
         </div>
     `;
 
@@ -373,6 +380,7 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
                                 <div class="sale-info">Акция действует до: ${endSaleDate}</div>
                             </div>
                         </div>
+                        ${purchaseOptionsHTML}
                         ${gameHeaderInfo}        
                         ${descriptionContent}
                         ${!isMobile ? videosContent : ''}
@@ -386,9 +394,7 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
                     ${screenshotsContent}
                     `}
                 </div>
-                <div class="sidebar">
-                    ${purchaseOptionsHTML}
-                </div>
+                
             </div>
         </div>
     `;
@@ -414,48 +420,43 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
     
     // Обработчик для кнопки покупки
     if (availablePrices.length > 0) {
-        document.querySelectorAll('.price-option').forEach(option => {
-            // Обработчик клика по всему блоку варианта
-            option.addEventListener('click', function(e) {
-                // Игнорируем клики по самому input или label
-                if (e.target.tagName === 'INPUT' || e.target.tagName === 'LABEL') return;
-                
-                document.querySelectorAll('.price-option').forEach(el => el.classList.remove('selected'));
-                this.classList.add('selected');
-                const radioInput = this.querySelector('input[type="radio"]');
-                radioInput.checked = true;
-                
-                const price = this.dataset.price;
-                const btn = document.querySelector('.buy-button');
-                btn.textContent = `Купить за ${price}₽`;
-            });
-
-            // Обработчик изменения radio кнопки
-            const radioInput = option.querySelector('input[type="radio"]');
-            radioInput.addEventListener('change', function() {
-                if (this.checked) {
-                    document.querySelectorAll('.price-option').forEach(el => el.classList.remove('selected'));
-                    option.classList.add('selected');
-                    const price = option.dataset.price;
-                    const btn = document.querySelector('.buy-button');
-                    btn.textContent = `Купить за ${price}₽`;
-                }
-            });
-        });
+        document.querySelectorAll('.variant-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        // Убираем выделение со всех кнопок
+        document.querySelectorAll('.variant-btn').forEach(b => b.classList.remove('selected'));
+        // Добавляем выделение текущей кнопке
+        this.classList.add('selected');
+        
+        // Обновляем основную кнопку покупки
+        const price = this.dataset.price;
+        const buyBtn = document.getElementById('modalBuyButton');
+        buyBtn.innerHTML = `<i class="fas fa-shopping-cart"></i> Добавить в корзину за ${price}₽`;
+        buyBtn.disabled = false;
+        
+        // Сохраняем выбранный вариант
+        selectedPurchaseOption = {
+            type: this.dataset.type,
+            price: price
+        };
+    });
+});
 
         // Обработчик для кнопки покупки
         document.getElementById('modalBuyButton').addEventListener('click', function(e) {
-            e.preventDefault();
-            const selectedOption = document.querySelector('.price-option.selected');
-            if (selectedOption) {
-                addToCart(
-                    product.product_id, 
-                    product.title || 'Без названия', 
-                    parseInt(selectedOption.dataset.price),
-                    selectedOption.dataset.type
-                );
-            }
-        });
+    e.preventDefault();
+    
+    if (!selectedPurchaseOption) {
+        showNotification('Пожалуйста, выберите вариант покупки');
+        return;
+    }
+    
+    addToCart(
+        product.product_id, 
+        product.title || 'Без названия', 
+        parseInt(selectedPurchaseOption.price),
+        selectedPurchaseOption.type
+    );
+});
     }
 }
 
