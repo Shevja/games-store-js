@@ -1,6 +1,6 @@
 const API_BASE = "https://api.xbox-rent.ru/api-sale";
-const ITEMS_PER_PAGE = 12;
-const INITIAL_LOAD_LIMIT = 12;
+const ITEMS_PER_PAGE = 24;
+const INITIAL_LOAD_LIMIT = 24;
 
 // Глобальные переменные
 let allProducts = [];

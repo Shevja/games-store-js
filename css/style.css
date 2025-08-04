@@ -582,7 +582,7 @@ main#productsContainer {
     height: 50px;
     background-color: var(--success);
     border-radius: 50%;
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
     color: white;

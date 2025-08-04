@@ -64,6 +64,15 @@ function updateCartUI() {
     elements.cartCount.textContent = cartCount;
     document.querySelector('.cart-badge').textContent = cartCount;
     elements.cartTotal.textContent = cart.reduce((sum, item) => sum + item.price, 0);
+
+    // Показываем или скрываем иконку корзины в зависимости от количества товаров
+    const cartIcon = document.getElementById('cartIcon');
+    if (cartCount > 0) {
+        cartIcon.style.display = 'flex';
+    } else {
+        cartIcon.style.display = 'none';
+        document.getElementById('cart').classList.remove('active'); // Закрываем корзину, если она была открыта
+    }
 }
 
 function toggleCart() {
@@ -74,6 +83,11 @@ function toggleCart() {
 function initCart() {
     const cartIcon = document.getElementById('cartIcon');
     const cart = document.getElementById('cart');
+
+    // Скрываем иконку при загрузке, если корзина пуста
+    if (cart.length === 0) {
+        cartIcon.style.display = 'none';
+    }
 
     cartIcon.addEventListener('click', toggleCart);
 
