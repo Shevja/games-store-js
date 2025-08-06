@@ -97,16 +97,12 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
     function formatLanguageValue(value, type) {
         if (!value) return value;
         const val = value.toLowerCase();
-        const endings = {
-            'voice': { 'rus': 'ая', 'eng': 'ая' },
-            'interface': { 'rus': 'ий', 'eng': 'ий' },
-            'subtitles': { 'rus': 'ие', 'eng': 'ие' }
-        };
+
         const hasRussian = val.includes('рус') || val.includes('russian');
         const hasEnglish = val.includes('англ') || val.includes('english');
         let result = [];
-        if (hasRussian) result.push(`Русск${endings[type].rus}`);
-        if (hasEnglish) result.push(`Английск${endings[type].eng}`);
+        if (hasRussian) result.push(`Русс <img src="img/ru.svg" alt="Русская озвучка" title="Русская озвучка">`);
+        if (hasEnglish) result.push(`Англ <img src="img/en.webp" alt="Русская озвучка" title="Русская озвучка">`);
         return result.join(' и ');
     }
 
@@ -123,7 +119,6 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
     if (product.screenshots && product.screenshots.length) {
         screenshotsContent = `
         <div class="media-section">
-            <h3>Скриншоты (${product.screenshots.length})</h3>
             <div class="screenshots-list">
                 ${product.screenshots.map(img => `
                     <div class="screenshot-item">
@@ -139,7 +134,6 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
     if (product.videos && product.videos.length) {
         videosContent = `
         <div class="media-section">
-            <h3>Видео</h3>
             <div class="videos-grid">
                 ${product.videos.map((video, index) => {
                     const videoId = `video-${Date.now()}-${index}`;
@@ -178,12 +172,8 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
     // Описание
     const descriptionId = `desc-${Date.now()}`;
     const descriptionContent = `
-        <div class="description-section">
-            <h3>Описание</h3>
-            <div class="description-content" id="${descriptionId}">
-                <p>${product.description || 'Описание отсутствует'}</p>
-            </div>
-            <button class="read-more-btn" data-target="${descriptionId}">Ещё</button>
+        <div class="description-content" id="${descriptionId}">
+            <p>${product.description || 'Описание отсутствует'}</p>
         </div>
     `;
     
@@ -241,7 +231,7 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
         Math.min(...availablePrices.map(p => p.price)) : 
         null;
 
-  let priceOptionsHTML = `
+    let priceOptionsHTML = `
     <div class="purchase-variants">
         ${availablePrices.map((priceObj, index) => {
             const isMinPrice = priceObj.price === minPrice;
@@ -273,7 +263,6 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
         ${availablePrices.length > 0 ? `Выберите вариант покупки` : 'Нет доступных вариантов'}
     </button>
 `;
-
 
     // Если нет доступных вариантов
     if (availablePrices.length === 0) {
@@ -339,20 +328,20 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
         `;
     }
 
-    // Создаём табы для мобильной версии
-    const mobileTabs = isMobile ? `
-        <div class="mobile-tabs">
+    // Создаём табы
+    const tabsContent = `
+        <div class="modal-tabs">
             <button class="tab-button active" data-tab="about">Об игре</button>
-            <button class="tab-button" data-tab="screenshots">Скриншоты</button>
+            <button class="tab-button" data-tab="description">Описание</button>
+            ${product.screenshots && product.screenshots.length ? '<button class="tab-button" data-tab="screenshots">Скриншоты</button>' : ''}
+            ${product.videos && product.videos.length ? '<button class="tab-button" data-tab="videos">Видео</button>' : ''}
         </div>
-    ` : '';
+    `;
 
     // Вставляем HTML вариантов покупки
-  const purchaseOptionsHTML = `
+    const purchaseOptionsHTML = `
         <div class="purchase-options">
-          
             ${priceOptionsHTML}
-            
         </div>
     `;
 
@@ -361,14 +350,14 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
         <div class="modal-header">
             <div class="game-cover-container">
                 ${mediaContent}
-                ${product.sale_product ? `<div class="discount-badge">-${product.prices.key.discounted_percentage}%</div>` : ''}
+                ${product.sale_product ? `<div class="discount-badge">Скидка ${product.prices.key.discounted_percentage}%</div>` : ''}
             </div>
         </div>
-        ${mobileTabs}
+        ${tabsContent}
         <div class="modal_info_content">
             <div class="modal-content-grid">
-                <div class="main-content ${isMobile ? 'mobile-view' : ''}">
-                    <div class="tab-content about-tab ${isMobile ? 'active' : ''}">
+                <div class="main-content">
+                    <div class="tab-content about-tab active">
                         <div class="game-title-wrapper">
                             <div class="game_title_img">
                                 <img src="${product.image || (product.screenshots && product.screenshots[0]) || 'img/placeholder.jpg'}" 
@@ -377,90 +366,92 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
                             </div>
                             <div class="game_title_info">
                                 <h2>${product.title || 'Без названия'}</h2>
-                                <div class="sale-info">Акция действует до: ${endSaleDate}</div>
+                                <div class="sale-info"><span class="icon_modal"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048" width="1em" height="1em" class="TagIcon-module__icon___idvrW TagIcon-module__primaryIcon___kF7Ys ProductTags-module__salesTagIcon___YZ-rE Icon-module__icon___6ICyA"><path d="M1024 0h896v896L896 1920 0 1024 1024 0zm448 624q36 0 68-14t56-38 38-56 14-68q0-36-14-68t-38-56-56-38-68-14q-36 0-68 14t-56 38-38 56-14 68q0 36 14 68t38 56 56 38 68 14z"></path></svg></span>Скидка действует до: ${endSaleDate}</div>
                             </div>
                         </div>
                         ${purchaseOptionsHTML}
-                        ${gameHeaderInfo}        
-                        ${descriptionContent}
-                        ${!isMobile ? videosContent : ''}
+                        ${gameHeaderInfo}
                     </div>
-                    ${isMobile ? `
+                    
+                    <div class="tab-content description-tab">
+                        ${descriptionContent}
+                    </div>
+                    
+                    ${product.screenshots && product.screenshots.length ? `
                     <div class="tab-content screenshots-tab">
                         ${screenshotsContent}
+                    </div>
+                    ` : ''}
+                    
+                    ${product.videos && product.videos.length ? `
+                    <div class="tab-content videos-tab">
                         ${videosContent}
                     </div>
-                    ` : `
-                    ${screenshotsContent}
-                    `}
+                    ` : ''}
                 </div>
-                
             </div>
         </div>
     `;
 
-    // Добавляем обработчики для табов (только на мобильных)
-    if (isMobile) {
-        document.querySelectorAll('.tab-button').forEach(button => {
-            button.addEventListener('click', () => {
-                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-                button.classList.add('active');
-                document.querySelector(`.${button.dataset.tab}-tab`).classList.add('active');
-            });
+    // Добавляем обработчики для табов
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.addEventListener('click', () => {
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            button.classList.add('active');
+            document.querySelector(`.${button.dataset.tab}-tab`).classList.add('active');
         });
+    });
+    
+    // Инициализация кнопки "Подробнее" для описания
+    if (product.description) {
+        const descContainer = document.getElementById(descriptionId);
+        if (descContainer) {
+            descContainer.style.maxHeight = 'none';
+            descContainer.style.overflow = 'visible';
+        }
     }
     
-    // Инициализация кнопки "Подробнее"
-    if (product.description) {
-        initReadMoreButton(descriptionId);
-    }
     initGameMetaReadMore();
     initVideoPlayers();
     
     // Обработчик для кнопки покупки
     if (availablePrices.length > 0) {
         document.querySelectorAll('.variant-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        // Убираем выделение со всех кнопок
-        document.querySelectorAll('.variant-btn').forEach(b => b.classList.remove('selected'));
-        // Добавляем выделение текущей кнопке
-        this.classList.add('selected');
-        
-        // Обновляем основную кнопку покупки
-        const price = this.dataset.price;
-        const buyBtn = document.getElementById('modalBuyButton');
-        buyBtn.innerHTML = `<i class="fas fa-shopping-cart"></i> Добавить в корзину за ${price}₽`;
-        buyBtn.disabled = false;
-        
-        // Сохраняем выбранный вариант
-        selectedPurchaseOption = {
-            type: this.dataset.type,
-            price: price
-        };
-    });
-});
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.variant-btn').forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+                
+                const price = this.dataset.price;
+                const buyBtn = document.getElementById('modalBuyButton');
+                buyBtn.innerHTML = `<i class="fas fa-shopping-cart"></i> Добавить в корзину за ${price}₽`;
+                buyBtn.disabled = false;
+                
+                selectedPurchaseOption = {
+                    type: this.dataset.type,
+                    price: price
+                };
+            });
+        });
 
-        // Обработчик для кнопки покупки
         document.getElementById('modalBuyButton').addEventListener('click', function(e) {
-    e.preventDefault();
-    
-    if (!selectedPurchaseOption) {
-        showNotification('Пожалуйста, выберите вариант покупки');
-        return;
-    }
-    
-    addToCart(
-        product.product_id, 
-        product.title || 'Без названия', 
-        parseInt(selectedPurchaseOption.price),
-        selectedPurchaseOption.type
-    );
-});
+            e.preventDefault();
+            
+            if (!selectedPurchaseOption) {
+                showNotification('Пожалуйста, выберите вариант покупки');
+                return;
+            }
+            
+            addToCart(
+                product.product_id, 
+                product.title || 'Без названия', 
+                parseInt(selectedPurchaseOption.price),
+                selectedPurchaseOption.type
+            );
+        });
     }
 }
 
-// Функция для открытия изображения на весь экран
 function openFullscreenImage(src) {
     const fullscreenDiv = document.createElement('div');
     fullscreenDiv.className = 'fullscreen-image';
@@ -470,67 +461,38 @@ function openFullscreenImage(src) {
     `;
     document.body.appendChild(fullscreenDiv);
     
-    // Обработчик закрытия
     fullscreenDiv.querySelector('.close-fullscreen').addEventListener('click', () => {
         document.body.removeChild(fullscreenDiv);
     });
     
-    // Закрытие по клику вне изображения
     fullscreenDiv.addEventListener('click', (e) => {
         if (e.target === fullscreenDiv) {
             document.body.removeChild(fullscreenDiv);
         }
     });
 }
-// Функция для открытия изображения на весь экран
-function openFullscreenImage(src) {
-    const fullscreenDiv = document.createElement('div');
-    fullscreenDiv.className = 'fullscreen-image';
-    fullscreenDiv.innerHTML = `
-        <img src="${src}" class="fullscreen-image-content">
-        <button class="close-fullscreen">&times;</button>
-    `;
-    document.body.appendChild(fullscreenDiv);
-    
-    // Обработчик закрытия
-    fullscreenDiv.querySelector('.close-fullscreen').addEventListener('click', () => {
-        document.body.removeChild(fullscreenDiv);
-    });
-    
-    // Закрытие по клику вне изображения
-    fullscreenDiv.addEventListener('click', (e) => {
-        if (e.target === fullscreenDiv) {
-            document.body.removeChild(fullscreenDiv);
-        }
-    });
-}
+
 function initVideoPlayers() {
-    // Обработчик для кнопки звука
     const soundToggle = document.querySelector('.sound-toggle');
     if (soundToggle) {
         soundToggle.addEventListener('click', function() {
             isSoundEnabled = !isSoundEnabled;
             
-            // Обновляем состояние всех видео на странице
             document.querySelectorAll('video').forEach(video => {
                 video.muted = !isSoundEnabled;
             });
             
-            // Обновляем кнопку
             this.classList.toggle('sound-on', isSoundEnabled);
             this.classList.toggle('sound-off', !isSoundEnabled);
             this.innerHTML = `<i class="fas fa-volume-${isSoundEnabled ? 'up' : 'mute'}"></i>`;
             
-            // Сохраняем состояние в localStorage
             localStorage.setItem('videoSoundEnabled', isSoundEnabled);
         });
     }
 
-    // Инициализация состояния звука для всех видео
     document.querySelectorAll('video').forEach(video => {
         video.muted = !isSoundEnabled;
         
-        // Остальные обработчики видео...
         const wrapper = video.closest('.video-wrapper');
         if (wrapper) {
             video.addEventListener('play', () => {
@@ -552,103 +514,15 @@ function initVideoPlayers() {
     });
 }
 
-function initSlider() {
-    const slider = document.querySelector('.screenshots-slider');
-    const slidesContainer = slider.querySelector('.slides-container');
-    const slides = slider.querySelectorAll('.slide');
-    const dotsContainer = slider.querySelector('.slider-dots');
-    const prevBtn = slider.querySelector('.prev');
-    const nextBtn = slider.querySelector('.next');
-    
-    let currentSlide = 0;
-    const slideCount = slides.length;
-    
-    // Создаем точки навигации
-    slides.forEach((_, index) => {
-        const dot = document.createElement('div');
-        dot.classList.add('dot');
-        if (index === 0) dot.classList.add('active');
-        dot.addEventListener('click', () => goToSlide(index));
-        dotsContainer.appendChild(dot);
-    });
-    
-    // Функция переключения слайда
-    function goToSlide(index) {
-        if (index < 0) index = slideCount - 1;
-        if (index >= slideCount) index = 0;
-        
-        slidesContainer.style.transform = `translateX(-${index * 100}%)`;
-        currentSlide = index;
-        
-        // Обновляем активную точку
-        slider.querySelectorAll('.dot').forEach((dot, i) => {
-            dot.classList.toggle('active', i === currentSlide);
-        });
-    }
-    
-    // Навигационные кнопки
-    prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
-    nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
-    
-    // Автопрокрутка (опционально)
-    let slideInterval = setInterval(() => goToSlide(currentSlide + 1), 5000);
-    
-    // Остановка автопрокрутки при наведении
-    slider.addEventListener('mouseenter', () => clearInterval(slideInterval));
-    slider.addEventListener('mouseleave', () => {
-        slideInterval = setInterval(() => goToSlide(currentSlide + 1), 5000);
-    });
-}
-function initReadMoreButton(descId) {
-    const descContainer = document.getElementById(descId);
-    const btn = document.querySelector(`[data-target="${descId}"]`);
-    
-    // Устанавливаем начальные стили
-    descContainer.style.maxHeight = '70px';
-    descContainer.style.overflow = 'hidden';
-    descContainer.style.transition = 'max-height 0.3s ease';
-    descContainer.style.cursor = 'pointer';
-    
-    // Если контент не превышает максимальную высоту, скрываем кнопку
-    if (descContainer.scrollHeight <= descContainer.clientHeight) {
-        btn.style.display = 'none';
-        descContainer.style.cursor = 'auto';
-        return;
-    }
-    
-    // Функция для переключения состояния
-    function toggleDescription() {
-        if (descContainer.style.maxHeight === '70px') {
-            descContainer.style.maxHeight = descContainer.scrollHeight + 'px';
-            btn.textContent = 'Скрыть';
-            descContainer.classList.add('expanded'); // Добавляем класс при раскрытии
-        } else {
-            descContainer.style.maxHeight = '70px';
-            btn.textContent = 'Ещё';
-            descContainer.classList.remove('expanded'); // Удаляем класс при скрытии
-        }
-    }
-    
-    // Обработчики событий
-    btn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        toggleDescription();
-    });
-    
-    descContainer.addEventListener('click', toggleDescription);
-}
 function initGameMetaReadMore() {
     document.querySelectorAll('.game-meta').forEach(meta => {
-        // Сохраняем оригинальную высоту
         meta.dataset.originalHeight = meta.scrollHeight;
         
-        // Если контент не превышает 70px - ничего не делаем
         if (meta.scrollHeight <= 70) {
             meta.style.removeProperty('overflow');
             return;
         }
 
-        // Добавляем класс и стили
         meta.classList.add('collapsible-meta');
         meta.style.maxHeight = '70px';
         meta.style.overflow = 'hidden';
@@ -656,32 +530,20 @@ function initGameMetaReadMore() {
         meta.style.position = 'relative';
         meta.style.cursor = 'pointer';
 
-        // Создаем кнопку
         const btn = document.createElement('button');
         btn.className = 'read-more-btn';
-        btn.innerHTML = `
-            Ещё
-            
-        `;
+        btn.innerHTML = `Ещё`;
 
-        // Вставляем кнопку после блока
         meta.insertAdjacentElement('afterend', btn);
 
-        // Обработчик клика
         const toggle = () => {
             if (meta.style.maxHeight === '70px') {
                 meta.style.maxHeight = `${meta.dataset.originalHeight}px`;
-                btn.innerHTML = `
-                    Скрыть
-                   
-                `;
+                btn.innerHTML = `Скрыть`;
                 meta.classList.add('expanded');
             } else {
                 meta.style.maxHeight = '70px';
-                btn.innerHTML = `
-                    Ещё
-                 
-                `;
+                btn.innerHTML = `Ещё`;
                 meta.classList.remove('expanded');
             }
         };
@@ -692,24 +554,5 @@ function initGameMetaReadMore() {
         });
 
         meta.addEventListener('click', toggle);
-    });
-}
-
-function setupPriceOptionHandlers(product, availablePrices) {
-    document.querySelectorAll('.price-option').forEach(option => {
-        option.addEventListener('click', function() {
-            document.querySelectorAll('.price-option').forEach(el => el.classList.remove('selected'));
-            this.classList.add('selected');
-            
-            const price = this.dataset.price;
-            const btn = document.querySelector('.buy-button');
-            btn.textContent = `Купить за ${price}₽`;
-            btn.onclick = () => addToCart(
-                product.product_id, 
-                product.title || 'Без названия', 
-                parseInt(price),
-                this.dataset.type
-            );
-        });
     });
 }

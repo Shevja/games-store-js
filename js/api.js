@@ -27,44 +27,57 @@ async function loadGames(page = 1) {
     }
 }
 
-async function loadDLC(page = 1) {
+const DLC_ITEMS_LIMIT = 50; // Максимальное количество DLC, которое можно запросить
+
+async function loadDLC() {
     try {
-        const offset = (page - 1) * ITEMS_PER_PAGE;
-        const response = await fetch(`${API_BASE}/games/dlc/?offset=${offset}&limit=${ITEMS_PER_PAGE}`);
+        showLoader();
+        // Для DLC используем только limit, так как endpoint не поддерживает offset
+        const response = await fetch(`${API_BASE}/games/dlc/?limit=${DLC_ITEMS_LIMIT}`);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data = await response.json();
 
-        // Сохраняем данные пагинации
-        dataCache.pagination = {
-            count: data.count,
-            next: data.next,
-            previous: data.previous
-        };
-
-        // Обработка разных форматов ответа
+        // Обработка данных DLC (без пагинации)
         const dlcItems = Array.isArray(data.results) ? data.results : [];
-        dataCache.dlc = dlcItems;
-        allProducts = dlcItems.map(item => ({...item, type: 'dlc' }));
+        dataCache.dlc = dlcItems.map(item => ({
+            ...item,
+            type: 'dlc',
+            title: item.title || "DLC",
+            image: item.image || (item.screenshots && item.screenshots[0]) || 'img/placeholder-dlc.jpg'
+        }));
 
-        elements.dlcCount.textContent = data.count || 0;
+        allProducts = dataCache.dlc;
+        elements.dlcCount.textContent = dlcItems.length;
 
-        // Обновляем пагинацию
-        updatePagination(data.count, page);
+        // Скрываем элементы пагинации для DLC
+        elements.paginationContainer.style.display = 'none';
 
-        // Рендерим продукты
         renderProducts();
     } catch (error) {
         console.error("DLC load error:", error);
+        showError("Не удалось загрузить DLC");
+        allProducts = [];
+        renderProducts();
+    } finally {
+        hideLoader();
     }
 }
 
 async function loadInitialData() {
     try {
         showLoader();
-        await loadGames(1); // Загружаем первую страницу игр
-        hideLoader();
+        if (currentType === 'dlc') {
+            await loadDLC();
+        } else {
+            await loadGames(1);
+        }
     } catch (error) {
         console.error("Initial load error:", error);
-        showError();
+        showError("Не удалось загрузить данные");
     } finally {
         hideLoader();
     }
