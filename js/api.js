@@ -1,7 +1,7 @@
 async function loadGames(page = 1) {
     try {
         const offset = (page - 1) * ITEMS_PER_PAGE;
-        const response = await fetch(`${API_BASE}/games/sales/?offset=${offset}&limit=${ITEMS_PER_PAGE}`);
+        const response = await fetch(`${API_BASE}/sales/?offset=${offset}&limit=${ITEMS_PER_PAGE}`);
         const data = await response.json();
 
         // Сохраняем данные пагинации
