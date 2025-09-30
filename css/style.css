@@ -1017,8 +1017,8 @@ main#productsContainer {
 .modal-content-grid {
     display: -ms-grid;
     display: grid;
-    -ms-grid-columns: 1fr 30px 300px;
-    grid-template-columns: 1fr 300px;
+    /*-ms-grid-columns: 1fr 30px 300px;*/
+    /*grid-template-columns: 1fr 300px;*/
     gap: 30px;
 }
 
@@ -1526,6 +1526,120 @@ main#productsContainer {
     background-color: rgba(16, 124, 16, 0.9);
 }
 
+/* перенесено с адаптива */
+.game-meta {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    gap: 3px;
+    font-size: 14px;
+    color: var(--primary-300);
+}
+.game-meta div {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 0;
+}
+.game-meta div img {
+    margin-top: 3px;
+    width: 18px;
+    height: 14px;
+}
+.purchase-variants {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 6px;
+    overflow-x: auto;
+    -ms-scroll-snap-type: x mandatory;
+    scroll-snap-type: x mandatory;
+    padding-right: 20px;
+}
+.variant-btn {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 5px;
+    border: 1px solid rgb(108, 108, 108);
+    border-radius: .75rem;
+    transition: .3s ease;
+    text-align: center;
+    color: #fff;
+    background: transparent;
+}
+.variant-btn.selected {
+    border-color: var(--success);
+    background: var(--primary-700);
+    -webkit-box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+#closeModal {
+    position: absolute;
+    top: 8px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-radius: 50%;
+    width: 38px;
+    min-height: 38px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    z-index: 9999;
+    border: none;
+    -webkit-transition: -webkit-transform 0.2s;
+    transition: -webkit-transform 0.2s;
+    -o-transition: transform 0.2s;
+    transition: transform 0.2s;
+    transition: transform 0.2s, -webkit-transform 0.2s;
+}
+#closeModal svg path {
+    fill: #fff;
+}
+#closeModal svg {
+    width: 20px;
+    height: 20px;
+}
+.game-cover-container img {
+    object-fit: cover;
+}
+.modal-tabs {
+    margin-left: 0;
+    top: 250px;
+}
+.modal-close {
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+}
+/* Дописанные стили */
+.modal-header {
+    position: sticky;
+    top: -32px;
+    z-index: 999;
+    background-color: var(--primary-850);
+}
 
 /* Для мобильных - адаптация */
 
@@ -1915,7 +2029,7 @@ main#productsContainer {
     }
     /* Закрытие модалки */
     #closeModal {
-        position: sticky;
+        position: absolute;
         top: 8px;
         left: 10px;
         background: rgba(0, 0, 0, 0.7);

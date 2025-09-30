@@ -1,8 +1,11 @@
 async function loadGames(page = 1) {
     try {
         const offset = (page - 1) * ITEMS_PER_PAGE;
+        console.log('fetching games');
         const response = await fetch(`${API_BASE}/sales/?offset=${offset}&limit=${ITEMS_PER_PAGE}`);
+        console.log('response', response);
         const data = await response.json();
+        console.log('data', data);
 
         // Сохраняем данные пагинации
         dataCache.pagination = {
