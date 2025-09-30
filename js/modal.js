@@ -34,7 +34,7 @@ async function showDetails(product) {
         }
 
         // Всегда загружаем полные данные по продукту
-        const response = await fetch(`${API_BASE}/game_id/${product.product_id}`);
+        const response = await fetch(`${API_BASE}/games/game_id/${product.product_id}`);
         const fullProductData = await response.json();
 
         if (!fullProductData) {
