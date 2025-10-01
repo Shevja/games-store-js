@@ -1,11 +1,9 @@
 async function loadGames(page = 1) {
     try {
+        showLoader();
         const offset = (page - 1) * ITEMS_PER_PAGE;
-        console.log('fetching games');
         const response = await fetch(`${API_BASE}/sales/?offset=${offset}&limit=${ITEMS_PER_PAGE}`);
-        console.log('response', response);
         const data = await response.json();
-        console.log('data', data);
 
         // Сохраняем данные пагинации
         dataCache.pagination = {
@@ -18,7 +16,7 @@ async function loadGames(page = 1) {
         dataCache.games = data.results || [];
         allProducts = dataCache.games.map(item => ({...item, type: 'games' }));
 
-        elements.gamesCount.textContent = data.count || 0;
+        elements.gamesCount.textContent = `(${data.count || 0})`;
 
         // Обновляем пагинацию
         updatePagination(data.count, page);
@@ -36,7 +34,7 @@ async function loadDLC() {
     try {
         showLoader();
         // Для DLC используем только limit, так как endpoint не поддерживает offset
-        const response = await fetch(`${API_BASE}/games/dlc/?limit=${DLC_ITEMS_LIMIT}`);
+        const response = await fetch(`${API_BASE}/sales/dlc?limit=${DLC_ITEMS_LIMIT}`);
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -54,7 +52,7 @@ async function loadDLC() {
         }));
 
         allProducts = dataCache.dlc;
-        elements.dlcCount.textContent = dlcItems.length;
+        elements.dlcCount.textContent = `(${dlcItems.length})`;
 
         // Скрываем элементы пагинации для DLC
         elements.paginationContainer.style.display = 'none';
