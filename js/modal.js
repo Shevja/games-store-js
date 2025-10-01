@@ -128,7 +128,7 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
             </div>
         </div>`;
     }
-    
+
     // Видео
     let videosContent = '';
     if (product.videos && product.videos.length) {
@@ -168,7 +168,7 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
             </div>
         </div>`;
     }
-    
+
     // Описание
     const descriptionId = `desc-${Date.now()}`;
     const descriptionContent = `
@@ -176,59 +176,59 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
             <p>${product.description || 'Описание отсутствует'}</p>
         </div>
     `;
-    
+
     // Game header info
     const gameHeaderInfo = `
         <div class="game-header-info">
             <div class="game-meta">${metaInfo.join('')}</div>
         </div>
     `;
-    
+
     // Определяем мобильное устройство
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
     const firstVideo = product.videos && product.videos.length > 0 ? product.videos[0] : null;
     const isHLS = firstVideo && firstVideo.endsWith('.m3u8');
     let isSoundEnabled = localStorage.getItem('videoSoundEnabled') !== 'false';
-    
+
     // Проверяем наличие русской озвучки
-    const hasRussianVoice = product.interface_ru && 
-                          (product.interface_ru.includes('русск') || 
+    const hasRussianVoice = product.interface_ru &&
+                          (product.interface_ru.includes('русск') ||
                            product.interface_ru.includes('russian') ||
                            product.interface_ru.toLowerCase().includes('рус'));
 
     // Проверяем совместимость с Xbox Series X/S
-    const isXboxSeriesCompatible = product.compatibility && 
-                                 (product.compatibility.includes('Xbox Series') || 
+    const isXboxSeriesCompatible = product.compatibility &&
+                                 (product.compatibility.includes('Xbox Series') ||
                                   product.compatibility.includes('XSX') ||
                                   product.compatibility.includes('XSS'));
 
     // Создаем массив доступных цен
     const availablePrices = [];
     if (keyPrice > 0) availablePrices.push({
-        type: 'key', 
-        price: keyPrice, 
-        title: 'Ключ активации', 
+        type: 'key',
+        price: keyPrice,
+        title: 'Ключ активации',
         desc: 'Мгновенная доставка на email',
         discounted: product.sale_product ? product.prices.key.discounted_percentage : null
     });
     if (uAccPrice > 0) availablePrices.push({
-        type: 'u_acc', 
-        price: uAccPrice, 
-        title: 'На ваш аккаунт', 
+        type: 'u_acc',
+        price: uAccPrice,
+        title: 'На ваш аккаунт',
         desc: 'Привязка к вашему аккаунту Xbox',
         discounted: product.sale_product && product.prices.u_acc ? product.prices.u_acc.discounted_percentage : null
     });
     if (newAccPrice > 0) availablePrices.push({
-        type: 'new_acc', 
-        price: newAccPrice, 
-        title: 'На новый аккаунт', 
+        type: 'new_acc',
+        price: newAccPrice,
+        title: 'На новый аккаунт',
         desc: 'Полный доступ к новому аккаунту',
         discounted: product.sale_product && product.prices.new_acc ? product.prices.new_acc.discounted_percentage : null
     });
 
     // Находим минимальную цену
-    const minPrice = availablePrices.length > 0 ? 
-        Math.min(...availablePrices.map(p => p.price)) : 
+    const minPrice = availablePrices.length > 0 ?
+        Math.min(...availablePrices.map(p => p.price)) :
         null;
 
     let priceOptionsHTML = `
@@ -273,7 +273,7 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
     const coverPriceHTML = minPrice ? `
         <div class="cover-price">
             <span class="final-price"><span class="ot_price">от</span>${minPrice}₽</span>
-            ${product.sale_product ? `<span class="original-price">${product.full_price}₽</span>` : ''}
+            ${product.sale_product ? `<span class="original-price">${product.prices.full_price}₽</span>` : ''}
         </div>
     ` : '';
 
@@ -312,10 +312,10 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
             </div>
         `;
     } else {
-        const fallbackImage = (product.screenshots && product.screenshots.length > 0) 
-            ? product.screenshots[0] 
+        const fallbackImage = (product.screenshots && product.screenshots.length > 0)
+            ? product.screenshots[0]
             : 'img/placeholder.jpg';
-        
+
         mediaContent = `
             <div class="game-cover-container">
                 <img src="${fallbackImage}" 
@@ -350,7 +350,7 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
         <div class="modal-header">
             <div class="game-cover-container">
                 ${mediaContent}
-                ${product.sale_product ? `<div class="discount-badge">Скидка ${product.prices.key.discounted_percentage}%</div>` : ''}
+                ${product.prices.key.discounted_percentage ? `<div class="discount-badge">Скидка ${product.prices.key.discounted_percentage}%</div>` : ''}
             </div>
         </div>
         ${tabsContent}
@@ -402,7 +402,7 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
             document.querySelector(`.${button.dataset.tab}-tab`).classList.add('active');
         });
     });
-    
+
     // Инициализация кнопки "Подробнее" для описания
     if (product.description) {
         const descContainer = document.getElementById(descriptionId);
@@ -411,22 +411,22 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
             descContainer.style.overflow = 'visible';
         }
     }
-    
+
     initGameMetaReadMore();
     initVideoPlayers();
-    
+
     // Обработчик для кнопки покупки
     if (availablePrices.length > 0) {
         document.querySelectorAll('.variant-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 document.querySelectorAll('.variant-btn').forEach(b => b.classList.remove('selected'));
                 this.classList.add('selected');
-                
+
                 const price = this.dataset.price;
                 const buyBtn = document.getElementById('modalBuyButton');
                 buyBtn.innerHTML = `<i class="fas fa-shopping-cart"></i> Добавить в корзину за ${price}₽`;
                 buyBtn.disabled = false;
-                
+
                 selectedPurchaseOption = {
                     type: this.dataset.type,
                     price: price
@@ -436,15 +436,15 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
 
         document.getElementById('modalBuyButton').addEventListener('click', function(e) {
             e.preventDefault();
-            
+
             if (!selectedPurchaseOption) {
                 showNotification('Пожалуйста, выберите вариант покупки');
                 return;
             }
-            
+
             addToCart(
-                product.product_id, 
-                product.title || 'Без названия', 
+                product.product_id,
+                product.title || 'Без названия',
                 parseInt(selectedPurchaseOption.price),
                 selectedPurchaseOption.type
             );
@@ -460,11 +460,11 @@ function openFullscreenImage(src) {
         <button class="close-fullscreen">&times;</button>
     `;
     document.body.appendChild(fullscreenDiv);
-    
+
     fullscreenDiv.querySelector('.close-fullscreen').addEventListener('click', () => {
         document.body.removeChild(fullscreenDiv);
     });
-    
+
     fullscreenDiv.addEventListener('click', (e) => {
         if (e.target === fullscreenDiv) {
             document.body.removeChild(fullscreenDiv);
@@ -477,32 +477,32 @@ function initVideoPlayers() {
     if (soundToggle) {
         soundToggle.addEventListener('click', function() {
             isSoundEnabled = !isSoundEnabled;
-            
+
             document.querySelectorAll('video').forEach(video => {
                 video.muted = !isSoundEnabled;
             });
-            
+
             this.classList.toggle('sound-on', isSoundEnabled);
             this.classList.toggle('sound-off', !isSoundEnabled);
             this.innerHTML = `<i class="fas fa-volume-${isSoundEnabled ? 'up' : 'mute'}"></i>`;
-            
+
             localStorage.setItem('videoSoundEnabled', isSoundEnabled);
         });
     }
 
     document.querySelectorAll('video').forEach(video => {
         video.muted = !isSoundEnabled;
-        
+
         const wrapper = video.closest('.video-wrapper');
         if (wrapper) {
             video.addEventListener('play', () => {
                 wrapper.classList.add('playing');
             });
-            
+
             video.addEventListener('pause', () => {
                 wrapper.classList.remove('playing');
             });
-            
+
             video.addEventListener('click', function(e) {
                 if (video.paused) {
                     video.play().catch(e => console.log('Play error:', e));
@@ -517,7 +517,7 @@ function initVideoPlayers() {
 function initGameMetaReadMore() {
     document.querySelectorAll('.game-meta').forEach(meta => {
         meta.dataset.originalHeight = meta.scrollHeight;
-        
+
         if (meta.scrollHeight <= 70) {
             meta.style.removeProperty('overflow');
             return;
