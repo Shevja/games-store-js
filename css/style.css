@@ -260,15 +260,21 @@ main#productsContainer {
     padding: 10px 10px;
 }
 
-.products-list .product-card img {
+.products-list .product-card>img {
     width: 120px;
     height: auto;
-}
-
-.products-list .product-card img {
     margin-bottom: 0;
 }
 
+.products-list .product-card .voice-flag {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+.products-list .product-card .voice-flag img {
+    border-radius: 2px;
+}
 
 /* Текст */
 
