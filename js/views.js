@@ -93,7 +93,7 @@ function createProductCard(product, price) {
             </div>
         ` : ''}
         
-        ${product.sale_product ? `
+        ${product.sale_product && product.prices.key.discounted_percentage ? `
             <div class="discount-badge">
                 -${product.prices.key.discounted_percentage}%
             </div>
@@ -106,7 +106,7 @@ function createProductCard(product, price) {
             <img src="${image}" alt="${title}" loading="lazy" />
             <div>
                 <h4>${title}</h4>
-                <p class="product-price">${priceText} ${product.sale_product ? `<span class="original-price">${product.full_price}₽</span>` : ''}</p>
+                <p class="product-price">${priceText} ${product.sale_product ? `<span class="original-price">${product.prices.full_price}₽</span>` : ''}</p>
             </div>
         `;
     } else if (currentView === 'list') {
@@ -116,13 +116,13 @@ function createProductCard(product, price) {
             <div>
                 <h4>${title}</h4>
                 <p class="list_text_card">${description}</p>
-                <p class="product-price">${priceText} ${product.sale_product ? `<span class="original-price">${product.full_price}₽</span>` : ''}</p>
+                <p class="product-price">${priceText} ${product.sale_product ? `<span class="original-price">${product.prices.full_price}₽</span>` : ''}</p>
             </div>
         `;
     } else {
         card.innerHTML = `
             <h4>${title}</h4>
-            <p class="product-price">${priceText} ${product.sale_product ? `<span class="original-price">${product.full_price}₽</span>` : ''}</p>
+            <p class="product-price">${priceText} ${product.sale_product ? `<span class="original-price">${product.prices.full_price}₽</span>` : ''}</p>
         `;
     }
 

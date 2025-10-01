@@ -18,6 +18,9 @@ async function loadGames(page = 1) {
 
         elements.gamesCount.textContent = `(${data.count || 0})`;
 
+        // Скрываем элементы пагинации для DLC если была скрыта
+        elements.paginationContainer.style.display = '';
+
         // Обновляем пагинацию
         updatePagination(data.count, page);
 
