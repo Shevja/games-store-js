@@ -1629,8 +1629,19 @@ main#productsContainer {
 .game-cover-container img {
     object-fit: cover;
 }
+.variant-price-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+.variant-price {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--accent);
+}
 /* Дописанные стили */
 .modal-tabs {
+    justify-content: space-between;
     margin-left: 0;
     top: 250px;
 }
@@ -1648,6 +1659,18 @@ main#productsContainer {
 }
 .product-card {
     position: relative;
+}
+.buy-button__wrapper {
+    position: sticky;
+    bottom: -32px;
+    z-index: 999;
+    padding: 15px 32px;
+    margin: 0 -32px;
+    background: color-mix(in srgb, var(--primary-850) 85%, transparent);
+    backdrop-filter: blur(7px);
+}
+.buy-button {
+    margin: 0;
 }
 
 /* Для мобильных - адаптация */
@@ -1917,16 +1940,6 @@ main#productsContainer {
         -webkit-box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     }
-    .variant-price-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 2px;
-    }
-    .variant-price {
-        font-size: 16px;
-        font-weight: 600;
-        color: var(--accent);
-    }
     .variant-original-price {
         font-size: 14px;
         text-decoration: line-through;
@@ -2102,11 +2115,14 @@ main#productsContainer {
                                         .sidebar .info-block {
                                             display: none;
                                         } */
+    .buy-button__wrapper {
+        margin: 0;
+        bottom: 0;
+    }
 }
 
 @media (max-width: 475px) {
     .purchase-variants {
-        flex-direction: column;
         padding-right: 0;
     }
 }

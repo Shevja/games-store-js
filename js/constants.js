@@ -1,6 +1,8 @@
 const API_BASE = "https://api.xbox-rent.ru/api-sale";
 const ITEMS_PER_PAGE = 50;
 const INITIAL_LOAD_LIMIT = 50;
+const SWIPE_CLOSE_THRESHOLD = 80;   // сколько нужно протянуть вниз, чтобы закрыть модальное окно
+const SWIPE_START_ZONE = 125;        // верхняя область, где можно начинать свайп
 
 // Глобальные переменные
 let allProducts = [];

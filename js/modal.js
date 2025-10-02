@@ -1,4 +1,5 @@
 let isSoundEnabled = true;
+let destroySwipeClose = null;
 
 function openModalWindow() {
     document.body.style.overflow = 'hidden';
@@ -11,6 +12,11 @@ function closeModalWindow() {
     elements.modal.classList.add("hidden");
     elements.modal.classList.remove("active");
 
+    if (destroySwipeClose) {
+        destroySwipeClose();
+        destroySwipeClose = null;
+    }
+
     // Останавливаем все видео при закрытии модального окна
     document.querySelectorAll('video').forEach(video => {
         video.pause();
@@ -21,10 +27,58 @@ function closeModalWindow() {
     }
 }
 
+function initModalSwipe() {
+    let startY = 0;
+
+    function handleTouchStart(e) {
+        const modalUpperArea = elements.modal.getBoundingClientRect().top;
+
+        if (e.touches[0].clientY - modalUpperArea < SWIPE_START_ZONE) {
+            startY = e.touches[0].clientY;
+        } else {
+            startY = 0;
+        }
+    }
+
+    function handleTouchEnd(e) {
+        if (!startY) return;
+
+        const endY = e.changedTouches[0].clientY;
+
+        if (endY - startY > SWIPE_CLOSE_THRESHOLD) {
+            closeModalWindow();
+        }
+    }
+
+    function updateSwipeState() {
+        const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
+        elements.modal.removeEventListener('touchstart', handleTouchStart)
+        elements.modal.removeEventListener('touchend', handleTouchEnd)
+
+        if (isMobile) {
+            elements.modal.addEventListener('touchstart', handleTouchStart, {passive: true,})
+            elements.modal.addEventListener('touchend', handleTouchEnd, {passive: true,})
+        }
+    }
+
+    updateSwipeState();
+    window.addEventListener('resize', updateSwipeState);
+
+    return () => {
+        console.log('destroy')
+        elements.modal.removeEventListener('touchstart', handleTouchStart)
+        elements.modal.removeEventListener('touchend', handleTouchEnd)
+        window.removeEventListener('resize', updateSwipeState);
+    }
+
+}
+
 async function showDetails(product) {
     if (isLoading) return;
     isLoading = true;
     showLoader();
+    destroySwipeClose = initModalSwipe()
     openModalWindow();
 
     try {
@@ -44,9 +98,9 @@ async function showDetails(product) {
         // Проверяем наличие обязательных полей
         if (!fullProductData.prices) {
             fullProductData.prices = {
-                key: { price: 0 },
-                u_acc: { price: 0 },
-                new_acc: { price: 0 }
+                key: {price: 0},
+                u_acc: {price: 0},
+                new_acc: {price: 0}
             };
         }
 
@@ -136,9 +190,9 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
         <div class="media-section">
             <div class="videos-grid">
                 ${product.videos.map((video, index) => {
-                    const videoId = `video-${Date.now()}-${index}`;
-                    const isHLS = video.endsWith('.m3u8');
-                    return `
+            const videoId = `video-${Date.now()}-${index}`;
+            const isHLS = video.endsWith('.m3u8');
+            return `
                     <div class="video-wrapper">
                         <video id="${videoId}" controls preload="metadata" 
                             poster="${product.image || 'img/placeholder.jpg'}"
@@ -164,7 +218,7 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
                         </script>
                         ` : ''}
                     </div>`;
-                }).join('')}
+        }).join('')}
             </div>
         </div>`;
     }
@@ -192,15 +246,15 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
 
     // Проверяем наличие русской озвучки
     const hasRussianVoice = product.interface_ru &&
-                          (product.interface_ru.includes('русск') ||
-                           product.interface_ru.includes('russian') ||
-                           product.interface_ru.toLowerCase().includes('рус'));
+        (product.interface_ru.includes('русск') ||
+            product.interface_ru.includes('russian') ||
+            product.interface_ru.toLowerCase().includes('рус'));
 
     // Проверяем совместимость с Xbox Series X/S
     const isXboxSeriesCompatible = product.compatibility &&
-                                 (product.compatibility.includes('Xbox Series') ||
-                                  product.compatibility.includes('XSX') ||
-                                  product.compatibility.includes('XSS'));
+        (product.compatibility.includes('Xbox Series') ||
+            product.compatibility.includes('XSX') ||
+            product.compatibility.includes('XSS'));
 
     // Создаем массив доступных цен
     const availablePrices = [];
@@ -232,37 +286,34 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
         null;
 
     let priceOptionsHTML = `
-    <div class="purchase-variants">
-        ${availablePrices.map((priceObj, index) => {
-            const isMinPrice = priceObj.price === minPrice;
-            const discountPercentage = product.prices[priceObj.type].discounted_percentage;
-            const hasDiscount = discountPercentage > 0;
-            
-            const priceDisplay = hasDiscount ? `
-                <div class="variant-price-wrapper">
-                    <span class="variant-price">${priceObj.price}₽</span>
-                    <span class="variant-discount">-${discountPercentage}%</span>
-                </div>
-            ` : `
-                <div class="variant-price-wrapper">
-                    <span class="variant-price">${priceObj.price}₽</span>
-                </div>
-            `;
-            
-            return `
-                <button class="variant-btn ${isMinPrice ? 'selected' : ''}" 
-                        data-price="${priceObj.price}" 
-                        data-type="${priceObj.type}">
-                    <span class="variant-title">${priceObj.title}</span>
-                    ${priceDisplay}
-                </button>
-            `;
-        }).join('')}
-    </div>
-    <button class="buy-button" id="modalBuyButton">
-        ${availablePrices.length > 0 ? `Выберите вариант покупки` : 'Нет доступных вариантов'}
-    </button>
-`;
+        <div class="purchase-variants">
+            ${availablePrices.map((priceObj, index) => {
+        const isMinPrice = priceObj.price === minPrice;
+        const discountPercentage = product.prices[priceObj.type].discounted_percentage;
+        const hasDiscount = discountPercentage > 0;
+
+        const priceDisplay = hasDiscount ? `
+                    <div class="variant-price-wrapper">
+                        <span class="variant-price">${priceObj.price}₽</span>
+                        <span class="variant-discount">-${discountPercentage}%</span>
+                    </div>
+                ` : `
+                    <div class="variant-price-wrapper">
+                        <span class="variant-price">${priceObj.price}₽</span>
+                    </div>
+                `;
+
+        return `
+                    <button class="variant-btn ${isMinPrice ? 'selected' : ''}" 
+                            data-price="${priceObj.price}" 
+                            data-type="${priceObj.type}">
+                        <span class="variant-title">${priceObj.title}</span>
+                        ${priceDisplay}
+                    </button>
+                `;
+    }).join('')}
+        </div>
+    `;
 
     // Если нет доступных вариантов
     if (availablePrices.length === 0) {
@@ -391,6 +442,11 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
                 </div>
             </div>
         </div>
+        <div class="buy-button__wrapper">
+            <button class="buy-button" id="modalBuyButton">
+                ${availablePrices.length > 0 ? `Выберите вариант покупки` : 'Нет доступных вариантов'}
+            </button>
+        </div>
     `;
 
     // Добавляем обработчики для табов
@@ -418,7 +474,7 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
     // Обработчик для кнопки покупки
     if (availablePrices.length > 0) {
         document.querySelectorAll('.variant-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
+            btn.addEventListener('click', function () {
                 document.querySelectorAll('.variant-btn').forEach(b => b.classList.remove('selected'));
                 this.classList.add('selected');
 
@@ -434,7 +490,7 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
             });
         });
 
-        document.getElementById('modalBuyButton').addEventListener('click', function(e) {
+        document.getElementById('modalBuyButton').addEventListener('click', function (e) {
             e.preventDefault();
 
             if (!selectedPurchaseOption) {
@@ -475,7 +531,7 @@ function openFullscreenImage(src) {
 function initVideoPlayers() {
     const soundToggle = document.querySelector('.sound-toggle');
     if (soundToggle) {
-        soundToggle.addEventListener('click', function() {
+        soundToggle.addEventListener('click', function () {
             isSoundEnabled = !isSoundEnabled;
 
             document.querySelectorAll('video').forEach(video => {
@@ -503,7 +559,7 @@ function initVideoPlayers() {
                 wrapper.classList.remove('playing');
             });
 
-            video.addEventListener('click', function(e) {
+            video.addEventListener('click', function (e) {
                 if (video.paused) {
                     video.play().catch(e => console.log('Play error:', e));
                 } else {
