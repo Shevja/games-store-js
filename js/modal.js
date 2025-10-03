@@ -29,36 +29,76 @@ function closeModalWindow() {
 
 function initModalSwipe() {
     let startY = 0;
+    let currentY = 0;
+    let isDragging = false;
+    let isGrabHeader = false;
+
+    const modalContent = elements.modalContent;
+    const modalBody = elements.modalBody;
 
     function handleTouchStart(e) {
-        const modalUpperArea = elements.modal.getBoundingClientRect().top;
+        const touchY = e.touches[0].clientY;
+        isGrabHeader = touchY - modalContent.getBoundingClientRect().top <= SWIPE_START_ZONE;
 
-        if (e.touches[0].clientY - modalUpperArea < SWIPE_START_ZONE) {
-            startY = e.touches[0].clientY;
+        // если есть скролл внутри body, значит не закрываем модалку
+        if (!isGrabHeader && modalBody.scrollTop > 0) return;
+
+        startY = e.touches[0].clientY;
+        currentY = startY;
+        isDragging = true;
+
+        modalContent.style.transition = 'none';
+    }
+
+    function handleTouchMove(e) {
+        if (!isDragging) return;
+
+        currentY = e.touches[0].clientY;
+        const diff = currentY - startY;
+
+        if (diff > 0) {
+            // тянем вниз, блокируем скролл внутри
+            modalBody.style.overflow = 'hidden';
+            modalContent.style.transform = `translateY(${diff}px)`;
         } else {
-            startY = 0;
+            // жест вверх, не блокируем скролл
+            modalBody.style.overflow = '';
         }
     }
 
-    function handleTouchEnd(e) {
-        if (!startY) return;
+    function handleTouchEnd() {
+        if (!isDragging) return;
+        isDragging = false;
 
-        const endY = e.changedTouches[0].clientY;
+        const diff = currentY - startY;
+        modalContent.style.transition = 'transform .3s ease';
+        modalBody.style.overflow = ''; // возвращаем скролл
 
-        if (endY - startY > SWIPE_CLOSE_THRESHOLD) {
+        if (diff > SWIPE_CLOSE_THRESHOLD) {
+            modalContent.style.transform = 'translateY(100%)';
+
+            modalContent.addEventListener('transitionend', function cleanup() {
+                modalContent.style.transform = '';
+                modalContent.removeEventListener('transitionend', cleanup);
+            });
+
             closeModalWindow();
+        } else {
+            modalContent.style.transform = '';
         }
     }
 
     function updateSwipeState() {
         const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
-        elements.modal.removeEventListener('touchstart', handleTouchStart)
-        elements.modal.removeEventListener('touchend', handleTouchEnd)
+        modalContent.removeEventListener('touchstart', handleTouchStart);
+        modalContent.removeEventListener('touchmove', handleTouchMove);
+        modalContent.removeEventListener('touchend', handleTouchEnd);
 
         if (isMobile) {
-            elements.modal.addEventListener('touchstart', handleTouchStart, {passive: true,})
-            elements.modal.addEventListener('touchend', handleTouchEnd, {passive: true,})
+            modalContent.addEventListener('touchstart', handleTouchStart, {passive: true});
+            modalContent.addEventListener('touchmove', handleTouchMove, {passive: false}); // важно! false
+            modalContent.addEventListener('touchend', handleTouchEnd);
         }
     }
 
@@ -66,20 +106,19 @@ function initModalSwipe() {
     window.addEventListener('resize', updateSwipeState);
 
     return () => {
-        console.log('destroy')
-        elements.modal.removeEventListener('touchstart', handleTouchStart)
-        elements.modal.removeEventListener('touchend', handleTouchEnd)
+        modalContent.removeEventListener('touchstart', handleTouchStart);
+        modalContent.removeEventListener('touchmove', handleTouchMove);
+        modalContent.removeEventListener('touchend', handleTouchEnd);
         window.removeEventListener('resize', updateSwipeState);
-    }
-
+    };
 }
 
 async function showDetails(product) {
     if (isLoading) return;
     isLoading = true;
     showLoader();
-    destroySwipeClose = initModalSwipe()
     openModalWindow();
+    destroySwipeClose = initModalSwipe()
 
     try {
         // Проверяем, что product содержит необходимые данные
@@ -396,6 +435,20 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
         </div>
     `;
 
+    const gameTitleWrapper = `
+        <div class="game-title-wrapper">
+            <div class="game_title_img">
+                <img src="${product.image || (product.screenshots && product.screenshots[0]) || 'img/placeholder.jpg'}" 
+                     class="game-thumbnail"
+                     onclick="openFullscreenImage('${product.image || (product.screenshots && product.screenshots[0]) || 'img/placeholder.jpg'}')"/>
+            </div>
+            <div class="game_title_info">
+                <h2>${product.title || 'Без названия'}</h2>
+                <div class="sale-info"><span class="icon_modal"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048" width="1em" height="1em" class="TagIcon-module__icon___idvrW TagIcon-module__primaryIcon___kF7Ys ProductTags-module__salesTagIcon___YZ-rE Icon-module__icon___6ICyA"><path d="M1024 0h896v896L896 1920 0 1024 1024 0zm448 624q36 0 68-14t56-38 38-56 14-68q0-36-14-68t-38-56-56-38-68-14q-36 0-68 14t-56 38-38 56-14 68q0 36 14 68t38 56 56 38 68 14z"></path></svg></span>Скидка действует до: ${endSaleDate}</div>
+            </div>
+        </div>
+    `
+
     // Формируем HTML
     elements.modalBody.innerHTML = `
         <div class="modal-header">
@@ -408,19 +461,12 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
         <div class="modal_info_content">
             <div class="modal-content-grid">
                 <div class="main-content">
-                    <div class="tab-content about-tab active">
-                        <div class="game-title-wrapper">
-                            <div class="game_title_img">
-                                <img src="${product.image || (product.screenshots && product.screenshots[0]) || 'img/placeholder.jpg'}" 
-                                     class="game-thumbnail"
-                                     onclick="openFullscreenImage('${product.image || (product.screenshots && product.screenshots[0]) || 'img/placeholder.jpg'}')"/>
-                            </div>
-                            <div class="game_title_info">
-                                <h2>${product.title || 'Без названия'}</h2>
-                                <div class="sale-info"><span class="icon_modal"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048" width="1em" height="1em" class="TagIcon-module__icon___idvrW TagIcon-module__primaryIcon___kF7Ys ProductTags-module__salesTagIcon___YZ-rE Icon-module__icon___6ICyA"><path d="M1024 0h896v896L896 1920 0 1024 1024 0zm448 624q36 0 68-14t56-38 38-56 14-68q0-36-14-68t-38-56-56-38-68-14q-36 0-68 14t-56 38-38 56-14 68q0 36 14 68t38 56 56 38 68 14z"></path></svg></span>Скидка действует до: ${endSaleDate}</div>
-                            </div>
-                        </div>
+                    <div>
+                        ${gameTitleWrapper}
                         ${purchaseOptionsHTML}
+                    </div>
+                    
+                    <div class="tab-content about-tab active">
                         ${gameHeaderInfo}
                     </div>
                     
@@ -468,10 +514,12 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
         }
     }
 
-    initGameMetaReadMore();
+    // initGameMetaReadMore();
     initVideoPlayers();
 
     // Обработчик для кнопки покупки
+    let selectedPurchaseOption = null
+
     if (availablePrices.length > 0) {
         document.querySelectorAll('.variant-btn').forEach(btn => {
             btn.addEventListener('click', function () {

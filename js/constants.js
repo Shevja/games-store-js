@@ -1,7 +1,7 @@
 const API_BASE = "https://api.xbox-rent.ru/api-sale";
 const ITEMS_PER_PAGE = 50;
 const INITIAL_LOAD_LIMIT = 50;
-const SWIPE_CLOSE_THRESHOLD = 80;   // сколько нужно протянуть вниз, чтобы закрыть модальное окно
+const SWIPE_CLOSE_THRESHOLD = 125;   // сколько нужно протянуть вниз, чтобы закрыть модальное окно
 const SWIPE_START_ZONE = 125;        // верхняя область, где можно начинать свайп
 
 // Глобальные переменные
@@ -36,6 +36,7 @@ const elements = {
     gamesBtn: document.getElementById("gamesBtn"),
     gamesCount: document.getElementById("gamesCount"),
     modal: document.getElementById("modal"),
+    modalContent: document.getElementById("modalContent"),
     modalBody: document.getElementById("modalBody"),
     modalOverlay: document.getElementById("modalOverlay"),
     nextPage: document.getElementById("nextPage"),
