@@ -1,5 +1,5 @@
 // Обновленная функция добавления в корзину с проверкой дубликатов
-function addToCart(id, title, price) {
+function addToCart(id, title, price, image) {
     // Проверяем, есть ли уже такой товар в корзине
     const existingItem = cart.find(item => item.id === id);
 
@@ -10,7 +10,7 @@ function addToCart(id, title, price) {
     }
 
     // Если товара нет в корзине, добавляем его
-    cart.push({ id, title, price });
+    cart.push({ id, title, price, image });
     updateCartUI();
 
     // Анимация иконки корзины
@@ -29,12 +29,15 @@ function addToCart(id, title, price) {
 // Функция для показа уведомлений
 function showNotification(message) {
     // Создаем элемент уведомления
+    const notificationsContainer = elements.notifications;
+    console.log(elements.notifications)
+
     const notification = document.createElement('div');
     notification.className = 'notification';
     notification.textContent = message;
 
     // Добавляем в DOM
-    document.body.appendChild(notification);
+    notificationsContainer.appendChild(notification);
 
     // Показываем с анимацией
     setTimeout(() => {
@@ -45,17 +48,25 @@ function showNotification(message) {
     setTimeout(() => {
         notification.classList.remove('show');
         setTimeout(() => {
-            document.body.removeChild(notification);
-        }, 300);
+            notificationsContainer.removeChild(notification);
+        }, 3000);
     }, 3000);
 }
 
 // Остальные функции остаются без изменений
 function updateCartUI() {
     elements.cartItems.innerHTML = cart.map((item, index) => `
-        <li>
-            ${item.title} - ${item.price}₽
-            <span class="remove-item" onclick="removeFromCart(${index})"><i class="fas fa-times"></i></span>
+        <li class="cart-item">
+            <div class="cart-item__image">
+                <img src="${item.image}" alt="${item.title}" loading="lazy">
+            </div>
+            <div class="cart-item-content">
+                <div class="cart-item-content__inner">
+                    <span class="cart-item-content__title">${item.title}</span>
+                    <span class="cart-item-content__price">${item.price}₽</span>
+                </div>
+                <span class="remove-item" onclick="removeFromCart(${index})"><i class="fas fa-times"></i></span>
+            </div>
         </li>
     `).join("");
 

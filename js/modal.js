@@ -334,7 +334,9 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
         const priceDisplay = hasDiscount ? `
                     <div class="variant-price-wrapper">
                         <span class="variant-price">${priceObj.price}₽</span>
-                        <span class="variant-discount">-${discountPercentage}%</span>
+                        <span class="variant-discount ${discountPercentage <= 50 ? 'variant-discount_colorless' : ''}">
+                            -${discountPercentage}%
+                        </span>
                     </div>
                 ` : `
                     <div class="variant-price-wrapper">
@@ -444,7 +446,13 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
             </div>
             <div class="game_title_info">
                 <h2>${product.title || 'Без названия'}</h2>
-                <div class="sale-info"><span class="icon_modal"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048" width="1em" height="1em" class="TagIcon-module__icon___idvrW TagIcon-module__primaryIcon___kF7Ys ProductTags-module__salesTagIcon___YZ-rE Icon-module__icon___6ICyA"><path d="M1024 0h896v896L896 1920 0 1024 1024 0zm448 624q36 0 68-14t56-38 38-56 14-68q0-36-14-68t-38-56-56-38-68-14q-36 0-68 14t-56 38-38 56-14 68q0 36 14 68t38 56 56 38 68 14z"></path></svg></span>Скидка действует до: ${endSaleDate}</div>
+                <div class="sale-info"><span class="icon_modal"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048" width="1em" height="1em" class="TagIcon-module__icon___idvrW TagIcon-module__primaryIcon___kF7Ys ProductTags-module__salesTagIcon___YZ-rE Icon-module__icon___6ICyA"><path d="M1024 0h896v896L896 1920 0 1024 1024 0zm448 624q36 0 68-14t56-38 38-56 14-68q0-36-14-68t-38-56-56-38-68-14q-36 0-68 14t-56 38-38 56-14 68q0 36 14 68t38 56 56 38 68 14z"></path></svg></span>
+                    Скидка действует до:                     
+                    ${endSaleDate === 'Не ограничена' 
+                        ? getNextTuesday()
+                        : endSaleDate
+                    }
+                </div>
             </div>
         </div>
     `
@@ -550,7 +558,8 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
                 product.product_id,
                 product.title || 'Без названия',
                 parseInt(selectedPurchaseOption.price),
-                selectedPurchaseOption.type
+                product.image,
+                selectedPurchaseOption.type,
             );
         });
     }

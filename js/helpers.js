@@ -39,3 +39,14 @@ function canPlayMP4() {
     const video = document.createElement('video');
     return !!video.canPlayType('video/mp4; codecs="avc1.42E01E, mp4a.40.2"');
 }
+
+function getNextTuesday() { // Дата следующего вторника (обновление распродажи)
+    const today = new Date();
+    const day = today.getDay();
+    const diff = (9 - day) % 7 || 7; // Кол-во дней до вторника
+    const nextTuesday = new Date(today);
+
+    nextTuesday.setDate(today.getDate() + diff);
+
+    return nextTuesday.toLocaleDateString('ru-RU');
+}

@@ -40,6 +40,7 @@ const elements = {
     modalBody: document.getElementById("modalBody"),
     modalOverlay: document.getElementById("modalOverlay"),
     nextPage: document.getElementById("nextPage"),
+    notifications: document.getElementById("notifications"),
     paginationContainer: document.getElementById("pagination"),
     pageInfo: document.getElementById("pageInfo"),
     prevPage: document.getElementById("prevPage"),
