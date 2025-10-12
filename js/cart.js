@@ -5,7 +5,14 @@ function addToCart(id, title, price, image) {
 
     if (existingItem) {
         // Если товар уже есть в корзине, показываем сообщение
-        showNotification('Этот товар уже в корзине');
+        if (existingItem.price !== price) {
+            existingItem.price = price;
+            updateCartUI();
+            showNotification('Товар заменен')
+        } else {
+            showNotification('Этот товар уже в корзине');
+        }
+
         return; // Прекращаем выполнение функции
     }
 
@@ -30,26 +37,27 @@ function addToCart(id, title, price, image) {
 function showNotification(message) {
     // Создаем элемент уведомления
     const notificationsContainer = elements.notifications;
-    console.log(elements.notifications)
 
     const notification = document.createElement('div');
     notification.className = 'notification';
     notification.textContent = message;
 
     // Добавляем в DOM
-    notificationsContainer.appendChild(notification);
+    notificationsContainer.prepend(notification);
 
     // Показываем с анимацией
     setTimeout(() => {
         notification.classList.add('show');
     }, 10);
 
+
     // Удаляем через 3 секунды
     setTimeout(() => {
         notification.classList.remove('show');
-        setTimeout(() => {
-            notificationsContainer.removeChild(notification);
-        }, 3000);
+
+        notification.addEventListener('transitionend', () => {
+            notification.remove()
+        }, { once: true });
     }, 3000);
 }
 
@@ -86,9 +94,20 @@ function updateCartUI() {
     }
 }
 
-function toggleCart() {
-    const cart = document.getElementById('cart');
-    cart.classList.toggle('active');
+function clickOutsideCartHandler(e) {
+    if (!e.target.closest('.cart')) toggleCart();
+}
+
+function toggleCart(e) {
+    if (e) e.stopPropagation()
+
+    const cartIsOpen = elements.cart.classList.toggle('active');
+
+    if (cartIsOpen) {
+        document.addEventListener('click', clickOutsideCartHandler);
+    } else {
+        document.removeEventListener('click', clickOutsideCartHandler);
+    }
 }
 
 function initCart() {
@@ -101,12 +120,6 @@ function initCart() {
     }
 
     cartIcon.addEventListener('click', toggleCart);
-
-    document.addEventListener('click', (e) => {
-        if (!cart.contains(e.target) && e.target !== cartIcon && !cartIcon.contains(e.target)) {
-            cart.classList.remove('active');
-        }
-    });
 }
 
 function removeFromCart(index) {

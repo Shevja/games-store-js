@@ -334,7 +334,7 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
         const priceDisplay = hasDiscount ? `
                     <div class="variant-price-wrapper">
                         <span class="variant-price">${priceObj.price}₽</span>
-                        <span class="variant-discount ${discountPercentage <= 50 ? 'variant-discount_colorless' : ''}">
+                        <span class="variant-discount">
                             -${discountPercentage}%
                         </span>
                     </div>
@@ -345,7 +345,7 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
                 `;
 
         return `
-                    <button class="variant-btn ${isMinPrice ? 'selected' : ''}" 
+                    <button class="variant-btn" 
                             data-price="${priceObj.price}" 
                             data-type="${priceObj.type}">
                         <span class="variant-title">${priceObj.title}</span>
@@ -529,20 +529,36 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
     let selectedPurchaseOption = null
 
     if (availablePrices.length > 0) {
+        function sameProductPriceInCart(productPrice) {
+            productPrice = +productPrice; // Приводим к числу
+            const cartProduct = cart.find(item => item.id === product.product_id)
+            return cartProduct?.price === productPrice;
+        }
+
         document.querySelectorAll('.variant-btn').forEach(btn => {
             btn.addEventListener('click', function () {
-                document.querySelectorAll('.variant-btn').forEach(b => b.classList.remove('selected'));
-                this.classList.add('selected');
-
-                const price = this.dataset.price;
+                const isSelected = this.classList.contains('selected');
                 const buyBtn = document.getElementById('modalBuyButton');
-                buyBtn.innerHTML = `<i class="fas fa-shopping-cart"></i> Добавить в корзину за ${price}₽`;
-                buyBtn.disabled = false;
 
+                document.querySelectorAll('.variant-btn').forEach(b => b.classList.remove('selected'));
+
+                if (isSelected) {
+                    // Снимаем выделение с активной кнопки если ее ткнули еще раз
+                    selectedPurchaseOption = null
+                    buyBtn.textContent = 'Выберите вариант покупки';
+                    return;
+                }
+
+                this.classList.add('selected');
+                const price = this.dataset.price;
                 selectedPurchaseOption = {
                     type: this.dataset.type,
                     price: price
                 };
+
+                buyBtn.innerHTML = sameProductPriceInCart(price)
+                    ? 'Открыть корзину'
+                    : `<i class="fas fa-shopping-cart"></i> Добавить в корзину за ${price}₽`;
             });
         });
 
@@ -553,6 +569,13 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
                 showNotification('Пожалуйста, выберите вариант покупки');
                 return;
             }
+
+            if (sameProductPriceInCart(selectedPurchaseOption.price)) {
+                toggleCart(e)
+                return;
+            }
+
+            this.textContent = 'Открыть корзину'
 
             addToCart(
                 product.product_id,

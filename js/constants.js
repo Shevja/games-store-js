@@ -26,6 +26,7 @@ const dataCache = {
 const elements = {
     container: document.getElementById("productsContainer"),
     closeModal: document.getElementById("closeModal"),
+    cart: document.getElementById("cart"),
     cartCount: document.getElementById("cartCount"),
     cartTotal: document.getElementById("cartTotal"),
     cartItems: document.getElementById("cartItems"),
