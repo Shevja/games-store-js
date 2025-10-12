@@ -195,7 +195,7 @@ function renderModalContent(product, keyPrice, uAccPrice, newAccPrice) {
         const hasEnglish = val.includes('англ') || val.includes('english');
         let result = [];
         if (hasRussian) result.push(`Русс <img src="img/ru.svg" alt="Русская озвучка" title="Русская озвучка">`);
-        if (hasEnglish) result.push(`Англ <img src="img/en.webp" alt="Русская озвучка" title="Русская озвучка">`);
+        if (hasEnglish) result.push(`Англ <img src="img/en.webp" alt="Английская озвучка" title="Английская озвучка">`);
         return result.join(' и ');
     }
 
