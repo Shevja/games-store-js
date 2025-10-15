@@ -2290,3 +2290,110 @@ main#productsContainer {
     user-select: none;
     background: linear-gradient(to bottom, white, black);
 }
+
+/* Уникальные стили для faq.html */
+
+.faq {
+    padding: 40px 0;
+}
+
+.faq__container {
+    max-width: 1240px;
+    padding: 0 20px;
+    margin: 0 auto;
+}
+
+.faq-title {
+    margin-bottom: 20px;
+}
+
+.faq-title__meta {
+    font-size: 16px;
+    color: var(--primary-300);
+}
+
+.faq__content {
+
+}
+
+.faq__list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.faq__list li button {
+    padding: 10px 20px;
+    background: var(--primary-800);
+    color: var(--text);
+    width: 100%;
+    text-align: left;
+    border: none;
+    font-width: 600;
+    font-size: 18px;
+    transition: background 0.2s;
+}
+
+.faq__list li button:active {
+    background: var(--accent-light);
+}
+
+.article__container {
+    display: none;
+}
+
+.article__back {
+    padding: 10px 20px;
+    background: var(--primary-800);
+    color: var(--text);
+    border: none;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.article__content .image__container {
+    width: 100%;
+    display: flex;
+    margin-bottom: 16px;
+}
+
+.article__content .image__container img {
+    width: 100%;
+    height: 100%;
+    max-height: 450px;
+    object-fit: contain;
+}
+
+.article__content h2 {
+    margin-bottom: 20px;
+}
+
+.article__content h3 {
+    margin-bottom: 20px;
+}
+
+.article__content p {
+    margin-bottom: 1rem;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .faq__list li button:hover {
+        background: var(--accent-light);
+        cursor: pointer;
+    }
+    .article__back:hover {
+        background: var(--accent-light);
+        cursor: pointer;
+    }
+}
+
+@media (max-width: 950px) {
+    .faq__list {
+        grid-template-columns: 1fr;
+    }
+}
