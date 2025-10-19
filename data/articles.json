@@ -237,6 +237,664 @@
                 "text": "11. Выходим с арендованного аккаунта (важно! Чтобы не мешать остальным)"
             }
         ]
+    },
+    {
+        "id": "4",
+        "title": "Запуск игр родительский контроль v2.0 ",
+        "content": [
+            {
+                "type": "heading",
+                "text": "Обновленная инструкция по установке и запуску игр от XboxRent. От 06.10.23 «Родительский Контроль 2.0»"
+            },
+            {
+                "type": "subheading",
+                "text": "Вы только что купили игру и не можете попасть на аккаунт что-бы ее скачать? что делать?"
+            },
+            {
+                "type": "image",
+                "src": "https://sun9-6.userapi.com/impg/b0Rm1lNUm2mu3c3uEmG6yh1CRlEQWyTd85AIcA/hBRa_UqHCO4.jpg?size=807x343&quality=95&sign=572b1a93a1396a8063579625d6e94e51&type=album",
+                "alt": ""
+            },
+            {
+                "type": "subheading",
+                "text": "Да все очень даже просто!"
+            },
+            {
+                "type": "paragraph",
+                "text": "1. Переходим в настройки."
+            },
+            {
+                "type": "paragraph",
+                "text": "2. Меняем время на xbox в промежудке с 00:00 до 07:00."
+            },
+            {
+                "type": "paragraph",
+                "text": "3. Отключаем интернет."
+            },
+            {
+                "type": "paragraph",
+                "text": "4. Заходим на купленный аккаунт."
+            },
+            {
+                "type": "paragraph",
+                "text": "5. Включаем интернет."
+            },
+            {
+                "type": "paragraph",
+                "text": "6. Ставим игру скачиваться."
+            },
+            {
+                "type": "paragraph",
+                "text": "7. Возвращаемся на свой аккаунт!"
+            },
+            {
+                "type": "heading",
+                "text": "А теперь как запустить купленную игру?"
+            },
+            {
+                "type": "paragraph",
+                "text": "1. Заходим на аккаунт когда он закрыт и нажимаем Далее когда высветиться родительский контроль."
+            },
+            {
+                "type": "paragraph",
+                "text": "2. Идем в настройки и выключаем интернет."
+            },
+            {
+                "type": "paragraph",
+                "text": "3. Меняем время на ночь в промежутке с 03:00 до 04:00."
+            },
+            {
+                "type": "paragraph",
+                "text": "4. Заходим в купленный аккаунт."
+            },
+            {
+                "type": "paragraph",
+                "text": "5. Переключаемся обратно на свой аккаунт."
+            },
+            {
+                "type": "paragraph",
+                "text": "6. Включаем обратно интернет."
+            },
+            {
+                "type": "paragraph",
+                "text": "7. Меняем время в промежутке с 4:00 до 23:59."
+            },
+            {
+                "type": "paragraph",
+                "text": "8. Запускаем игру и погружаем ее до гл.меню."
+            },
+            {
+                "type": "paragraph",
+                "text": "9. Обязательно выходим с купленного аккаунта."
+            },
+            {
+                "type": "paragraph",
+                "text": "10. Наслаждаемся игрой."
+            },
+            {
+                "type": "paragraph",
+                "text": "Видео инструкция как запустить игру:"
+            },
+            {
+                "type": "video",
+                "src": "https://telegra.ph/embed/youtube?url=https%3A%2F%2Fyoutu.be%2FsJjHOoKsUHU%3Fsi%3DNtBlThZ_QaKRYLhQ"
+            },
+            {
+                "type": "heading",
+                "text": "P.S: Если при входе каждый раз просит пароль что делать?"
+            },
+            {
+                "type": "paragraph",
+                "text": "Значит вы забыли при первом входе в профиль поставить «без ограничений»!"
+            },
+            {
+                "type": "paragraph",
+                "text": "1. Заходим в купленный аккаунт когда позволяет время входа (с 00:00 до 07:00)"
+            },
+            {
+                "type": "paragraph",
+                "text": "2. Переходим: настройки — Учетная запись — вход, безопасность и код доступа — изменить параметры входа и безопасности — ставим без ограничении."
+            }
+        ]
+    },
+    {
+        "id": "5",
+        "title": "Запуск игр родительский контроль v1.0",
+        "content": [
+            {
+                "type": "heading",
+                "text": "Новая инструкция по запуску игр! От 03.11.22 «ЧАСЫ»"
+            },
+            {
+                "type": "paragraph",
+                "text": "Немного теории, раньше мы с вами обманывали табличку «Родительский контроль» через отключенный интернет, а теперь мы с вами будем обманывать ее через время!"
+            },
+            {
+                "type": "paragraph",
+                "text": "Запомните днем аккаунт открыт, а ночью аккаунт закрыт! И с этим мы и будем играться!"
+            },
+            {
+                "type": "image",
+                "src": "https://sun9-11.userapi.com/impg/BjqM2xFfaQMVovB3vhiMIjIZr0zJNsPaOpzx1Q/iWvtNma1o94.jpg?size=807x343&quality=95&sign=eb6fac149681e28a7966b24a7349a7be&type=album",
+                "alt": ""
+            },
+            {
+                "type": "heading",
+                "text": "Видео инструкция как запустить игру:"
+            },
+            {
+                "type": "video",
+                "src": "https://telegra.ph/embed/youtube?url=https%3A%2F%2Fyoutu.be%2Fdg3pZ763Rts"
+            },
+            {
+                "type": "heading",
+                "text": "P.S: Если при входе каждый раз просит пароль что делать?"
+            },
+            {
+                "type": "paragraph",
+                "text": "Значит вы забыли при первом входе в профиль поставить «без ограничений»!"
+            },
+            {
+                "type": "paragraph",
+                "text": "1. Заходим в купленный аккаунт когда позволяет время входа"
+            },
+            {
+                "type": "paragraph",
+                "text": "Переходим: настройки — Учетная запись — вход, безопасность и код доступа — изменить параметры входа и безопасности — ставим без ограничении."
+            }
+        ]
+    },
+    {
+        "id": "6",
+        "title": "Мгновенный доступ Game Pass Ultimate",
+        "content": [
+            {
+                "type": "heading",
+                "text": "Мгновенный доступ к подписке GamePass Ultimate при включении консоли."
+            },
+            {
+                "type": "image",
+                "src": "https://sun9-23.userapi.com/impg/P_lE5sOUqdc1tvelIxMVPBEsgaECz0RScSIJxA/2Jf2lKVyA3Q.jpg?size=807x403&quality=96&sign=21b8b970c5fe9710c4356b2e938f4c4c&type=album",
+                "alt": ""
+            },
+            {
+                "type": "paragraph",
+                "text": "\uD83D\uDCDCКак работает мгновенный доступ:"
+            },
+            {
+                "type": "paragraph",
+                "text": "При включении приставки у вас автоматически будет запускаться аккаунт привязанный к геймпаду, с которого играете, позволяя вам пользоваться подпиской на любом профиле не выполняя никаких лишних действий для входа в аккаунт."
+            },
+            {
+                "type": "paragraph",
+                "text": "Шаг 1: Покупаем персональный аккаунт и заходим в него.(все как обычно)"
+            },
+            {
+                "type": "paragraph",
+                "text": "Шаг 2: Заходим с купленного аккаунта в параметры."
+            },
+            {
+                "type": "image",
+                "src": "https://sun9-19.userapi.com/impg/IPKkcy13g21mJIGAOLbOTdI8FvXliRTxJYYfmA/-Zbd6sspwWI.jpg?size=807x454&quality=96&sign=ab168dec37136e070c3e04775cea3ec3&type=album",
+                "alt": ""
+            },
+            {
+                "type": "paragraph",
+                "text": "Шаг 3: Переходим в раздел учетная запись."
+            },
+            {
+                "type": "paragraph",
+                "text": "Шаг 4: Далее в подраздел вход, безопасность и код доступа."
+            },
+            {
+                "type": "image",
+                "src": "https://sun9-38.userapi.com/impg/zDtBfhCkJd2pQ4dBUoLuUiMtNbvgEg4oEmDZBQ/DYoj0U0SmEA.jpg?size=807x454&quality=96&sign=d125725ac13342200d1211bb5005e0da&type=album",
+                "alt": ""
+            },
+            {
+                "type": "paragraph",
+                "text": "Шаг 5: Выбираем пункт \"этот геймпад выполняет вход\"."
+            },
+            {
+                "type": "image",
+                "src": "https://sun9-79.userapi.com/impg/D35b2Yyfysmqe6hn-JHBU2yuRFexHVVVZ6LNug/zdYp0kpAvgc.jpg?size=807x454&quality=96&sign=4ce640efd293441eb2254c968fca2ce3&type=album",
+                "alt": ""
+            },
+            {
+                "type": "paragraph",
+                "text": "Последнее действие это нажать \" привязать геймпад\"."
+            },
+            {
+                "type": "image",
+                "src": "https://sun9-33.userapi.com/impg/Gk-RvCIeO2u-n48qxvBXAEjier8TR7KowUyXVQ/ubYhSd3ufuQ.jpg?size=807x454&quality=96&sign=ec337ccd2b1f4e63559be628cc1593bf&type=album",
+                "alt": ""
+            }
+        ]
+    },
+    {
+        "id": "7",
+        "title": "Разные способы запусков игр",
+        "content": [
+            {
+                "type": "heading",
+                "text": "Запуск арендованных игр что-бы вас не выкидывало игра ofline."
+            },
+            {
+                "type": "subheading",
+                "text": "1. Наиболее популярный тем что он простой и работает у многих!"
+            },
+            {
+                "type": "paragraph",
+                "text": "1. Заходим на купленный профиль."
+            },
+            {
+                "type": "paragraph",
+                "text": "2. Переключаемся на свой основной."
+            },
+            {
+                "type": "paragraph",
+                "text": "3. Запускаете игру (с купленного выходить не надо!)."
+            },
+            {
+                "type": "paragraph",
+                "text": "Как только пойдет запуск игры, нажимаем кнопку Хоум на геймпаде светящиеся и в параметры. (Если выйдет окно, нажимаем \"играть вместо этого\")"
+            },
+            {
+                "type": "paragraph",
+                "text": "4. Параметры - Параметры сети - Дополнительные параметры - Параметры DNS - Вручную."
+            },
+            {
+                "type": "paragraph",
+                "text": "5. Ставим основной IPv4 DNS: 000-000-000-000 Дополнительный IPv4 DNS: 000-000-000-000"
+            },
+            {
+                "type": "ОБЯЗАТЕЛЬНО Ждём в настройках этих, как в видео секунд 5-10!",
+                "text": "После нажимаем кнопку хоум и открываем там игру. Обязательно именно через кнопку Хоум, не выходя из настроек!"
+            },
+            {
+                "type": "link",
+                "text": "Видео инструкция",
+                "href": "https://vk.com/@xbox_one_g-chto-nuzhno-delat-chto-by-ne-vykidyvalo-s-igry"
+            },
+            {
+                "type": "heading",
+                "text": "2. Чуть сложнее способ, но более эффективный, для тех у кого первый не сработал!"
+            },
+            {
+                "type": "paragraph",
+                "text": "1. Заходим на купленный профиль."
+            },
+            {
+                "type": "paragraph",
+                "text": "2. Переключаемся на свой основной."
+            },
+            {
+                "type": "paragraph",
+                "text": "3. Запускаете игру (с купленного не выходим!)."
+            },
+            {
+                "type": "paragraph",
+                "text": "Как только пойдет запуск игры, нажимаем кнопку Хоум на геймпаде светящиеся и в параметры.(Если выйдет окно, нажимаем \"играть вместо этого\")"
+            },
+            {
+                "type": "paragraph",
+                "text": "4. Параметры - Параметры сети - Дополнительные параметры - Параметры IP адреса - Вручную."
+            },
+            {
+                "type": "paragraph",
+                "text": "5. Тут внимательно как указано:"
+            },
+            {
+                "type": "paragraph",
+                "text": "IPv4 IP-Адрес: 55-55-55-55"
+            },
+            {
+                "type": "paragraph",
+                "text": "Маска подсети: 255-255-255-0"
+            },
+            {
+                "type": "paragraph",
+                "text": "Шлюз: 55-55-55-55 (У некоторых, если не получается, то это: 192.168.0.12)"
+            },
+            {
+                "type": "paragraph",
+                "text": "Основной IPv4 DNS: 000-000-000-000"
+            },
+            {
+                "type": "paragraph",
+                "text": "Дополнительный IPv4 DNS: 000-000-000-000"
+            },
+            {
+                "type": "paragraph",
+                "text": "Обязательно Ждём в вкладке настройках секунд 5-10!"
+            },
+            {
+                "type": "paragraph",
+                "text": "После нажимаем кнопку хоум и открываем там игру. Обязательно именно через кнопку Хоум, не выходя из настроек!"
+            },
+            {
+                "type": "paragraph",
+                "text": "Пошла загрузка. Продолжаем играть без вылетов и проблем :)"
+            },
+            {
+                "type": "paragraph",
+                "text": "На первый взгляд кажется, что сложно, но пару раз это сделав вы поймете что это все легко и быстро!"
+            },
+            {
+                "type": "heading",
+                "text": "3. Способ не очень удобный, но тоже рабочий раздача wifi с телефона!"
+            },
+            {
+                "type": "paragraph",
+                "text": "У вас должна быть подключена приставка по wifi к вашему роутеру! По кабелю работать не будет!"
+            },
+            {
+                "type": "paragraph",
+                "text": "1. Заходим на купленный профиль"
+            },
+            {
+                "type": "paragraph",
+                "text": "2. Переключаемся на свой основной."
+            },
+            {
+                "type": "paragraph",
+                "text": "3. Запускаете игру. (с купленного не выходим!)"
+            },
+            {
+                "type": "paragraph",
+                "text": "4. Через 3-4 сек отключаем провод интернета от роутера (до выхода таблички)"
+            },
+            {
+                "type": "paragraph",
+                "text": "5. Играем сколько хотим"
+            },
+            {
+                "type": "heading",
+                "text": "4. Еще один простой способ зайти в игру!"
+            },
+            {
+                "type": "paragraph",
+                "text": "Самый простой способ это огранивать интернет Хбоксу через приложение от роутера"
+            },
+            {
+                "type": "paragraph",
+                "text": "Скачиваем приложение для своего роутера."
+            },
+            {
+                "type": "paragraph",
+                "text": "Запускаем игру"
+            },
+            {
+                "type": "paragraph",
+                "text": "Отключаем доступ в интернет в приложении нажатием одной кнопки."
+            },
+            {
+                "type": "image",
+                "src": "https://sun9-48.userapi.com/impg/Px74_w2w3Wl9Tj2-jOGCgcKJ-8RM3ZmXdEauVQ/DSAUtA7uZlo.jpg?size=400x488&quality=96&sign=5f4c2834828b4317f2c713a36c5809f0&type=album",
+                "alt": ""
+            },
+            {
+                "type": "heading",
+                "text": "6. Способ используя ноутбук работает на 100% у всех!"
+            },
+            {
+                "type": "paragraph",
+                "text": "Плюс я с ноутбука раздавал инет через программу MyPublicWiFi после запуска игры в программе ставил галочку ограничить интернет и так же все работало."
+            },
+            {
+                "type": "paragraph",
+                "text": "1. Скачиваем на ноутбук программу MyPublicWiFi, запускаем ее и раздаем wifi."
+            },
+            {
+                "type": "paragraph",
+                "text": "2. Подключаемся на Xbox к сети к этой программе по Wifi."
+            },
+            {
+                "type": "paragraph",
+                "text": "3. Заходим на купленный профиль."
+            },
+            {
+                "type": "paragraph",
+                "text": "4. Переключаемся на свой основной."
+            },
+            {
+                "type": "paragraph",
+                "text": "5. Запускаете игру. (с купленного не выходим!)"
+            },
+            {
+                "type": "paragraph",
+                "text": "6. Через 3-4 сек в программе на ноутбуке ставим галочку заблокировать интернет и кнопку применить."
+            },
+            {
+                "type": "paragraph",
+                "text": "7. Все играем сколько хотим, наигрались снимаем галочку и нажимаем применить, интернет опять пойдет на приставку."
+            },
+            {
+                "type": "image",
+                "src": "https://sun9-48.userapi.com/impg/Px74_w2w3Wl9Tj2-jOGCgcKJ-8RM3ZmXdEauVQ/DSAUtA7uZlo.jpg?size=400x488&quality=96&sign=5f4c2834828b4317f2c713a36c5809f0&type=album",
+                "alt": ""
+            },
+            {
+                "type": "paragraph",
+                "text": "Все эти способы были проверены на многих приставках, у кого то один не работает, у кого то другой, но все же каждый нашел для себя удобный и рабочий способ! Если вдруг у вас работал способ, а через пару дней перестал просто очистите кеш на приставке!"
+            },
+            {
+                "type": "paragraph",
+                "text": "1. Нажмите и зажмите кнопку включения xbox на консоли в течении 5 - 10 секунд до полного отключения консоли."
+            },
+            {
+                "type": "paragraph",
+                "text": "2. После этого выньте консоль из розетки на 3 минуты"
+            },
+            {
+                "type": "paragraph",
+                "text": "3. Смело вставляйте вилку в розетку и включайте вашу консоль."
+            }
+        ]
+    },
+    {
+        "id": "8",
+        "title": "Служба недоступна DNS",
+        "content": [
+            {
+                "type": "heading",
+                "text": "\uD83D\uDEAB Служба недоступна"
+            },
+            {
+                "type": "paragraph",
+                "text": "Вы находитесь в регионе где эта служба недоступна (0х80а40401)"
+            },
+            {
+                "type": "image",
+                "src": "https://storage.yandexcloud.net/s3-metaratings-storage/images/86/a5/86a54378f19fb6b07b20e7e1c1a2f2f6.png",
+                "alt": ""
+            },
+            {
+                "type": "paragraph",
+                "text": "\uD83D\uDCF1Для тех кто столкнулся с проблемами доступа к сети:"
+            },
+            {
+                "type": "paragraph",
+                "text": "\uD83D\uDE91 Для того, чтобы снова вернуть ваш Xbox к жизни, просто сделайте следующее:"
+            },
+            {
+                "type": "paragraph",
+                "text": "1. Нажмите кнопку Xbox на контроллере."
+            },
+            {
+                "type": "paragraph",
+                "text": "2. Выберите «Настройки»."
+            },
+            {
+                "type": "paragraph",
+                "text": "3. В разделе «Сеть» выберите «Расширенные настройки сети»."
+            },
+            {
+                "type": "paragraph",
+                "text": "4. В разделе «Заменить DNS на один из вариантов ниже:"
+            },
+            {
+                "type": "paragraph",
+                "text": "первичный 80.78.247.254\n\nвторичный 0.0.0.0"
+            },
+            {
+                "type": "paragraph",
+                "text": "первичный 45.90.33.120\n\nвторичный 0.0.0.0"
+            },
+            {
+                "type": "paragraph",
+                "text": "первичный 176.99.11.77\n\nвторичный 0.0.0.0"
+            },
+            {
+                "type": "paragraph",
+                "text": "первичный 176.99.11.77 \n\nвторичный 80.78.247.254"
+            },
+            {
+                "type": "paragraph",
+                "text": "первичный 37.220.84.124\n\nвторичный 0.0.0.0"
+            },
+            {
+                "type": "paragraph",
+                "text": "первичный 37.220.84.124\n\nвторичный 37.220.84.12"
+            },
+            {
+                "type": "paragraph",
+                "text": "первичный 178.22.122.100\n\nвторичный 0.0.0.0"
+            },
+            {
+                "type": "paragraph",
+                "text": "первичный 178.22.122.100\n\nвторичный 178.22.122.100"
+            },
+            {
+                "type": "paragraph",
+                "text": "первичный 78.157.42.100\n\nвторичный 78.157.42.101"
+            },
+            {
+                "type": "paragraph",
+                "text": "Основной: 185.20.226.164\n\nВторичный: 0.0.0.0"
+            },
+            {
+                "type": "paragraph",
+                "text": "\uD83D\uDC4BНе забудьте перезагрузить консоль из меню настроек"
+            }
+        ]
+    },
+    {
+        "id": "9",
+        "title": "Активация ключей",
+        "content": [
+            {
+                "type": "heading",
+                "text": "Активация ключей"
+            },
+            {
+                "type": "paragraph",
+                "text": "1- Скачиваете приложение VPN Planet для мобильного устройства.\nИли любую другую программу Vpn на ваш вкус"
+            },
+            {
+                "type": "paragraph",
+                "text": "2 — Запускаем программу с VPN и ставим страну которую вам сказали когда выдали ключ."
+            },
+            {
+                "type": "paragraph",
+                "text": "3 —Переходим на сайт "
+            },
+            {
+                "type": "link",
+                "text": "Microsoft",
+                "href": "https://login.microsoftonline.com/common/oauth2/v2.0/authorize?scope=service::account.microsoft.com::MBI_SSL+openid+profile+offline_access&response_type=code&client_id=81feaced-5ddd-41e7-8bef-3e20a2689bb7&redirect_uri=https:%2F%2Faccount.microsoft.com%2Fauth%2Fcomplete-signin-oauth&client-request-id=ea5c5dde-cd5e-43a6-b254-e18f153d9913&x-client-SKU=MSAL.Desktop&x-client-Ver=4.61.3.0&x-client-OS=Windows+Server+2019+Datacenter&prompt=login&client_info=1&state=H4sIAAAAAAAEAAXByYJDMAAA0H-ZqwONGhzmoI2ipbETt6FTRGyx9-vnva-Fyn3MgcBSGCyjAE9ztjwcVUZXdcxTIY3SLA43_qq7Z_zISlZUQ5-4powfzW-LmnPF8su4iqT2_FnYw-eEF15ms7GNAm26Sa_FEZZCldgF91FNl7lZzyR-9sc_W2O5dGx-4-YZRtLCjLFwwtyC3ij5z6WQq5UUPYo0UId6r6buxrX0hlXlqlJPQSmtcKyHe4u07hQc28PJ3BKH2kpM75TSfO4OZK9A3K1nwR1NqQU3BQ63lglvANLB7hJchi9owdf7ZiwxUsBkaEeQkNEGdeSd2kCKkKeZQ0sAHfTmzp11RpRSjG2InZC7Szyo_Ozuu7CuP6RbKDzT1Sars7MlUS-ic-INr1e_fXIv-GnVo5-vf2e8vtxuAQAA&msaoauth2=true&lc=1049"
+            },
+            {
+                "type": "paragraph",
+                "text": "4 — Выполняете вход в свою учетную запись "
+            },
+            {
+                "type": "link",
+                "text": "Microsoft.",
+                "href": "https://login.microsoftonline.com/common/oauth2/v2.0/authorize?scope=service::account.microsoft.com::MBI_SSL+openid+profile+offline_access&response_type=code&client_id=81feaced-5ddd-41e7-8bef-3e20a2689bb7&redirect_uri=https:%2F%2Faccount.microsoft.com%2Fauth%2Fcomplete-signin-oauth&client-request-id=ea5c5dde-cd5e-43a6-b254-e18f153d9913&x-client-SKU=MSAL.Desktop&x-client-Ver=4.61.3.0&x-client-OS=Windows+Server+2019+Datacenter&prompt=login&client_info=1&state=H4sIAAAAAAAEAAXByYJDMAAA0H-ZqwONGhzmoI2ipbETt6FTRGyx9-vnva-Fyn3MgcBSGCyjAE9ztjwcVUZXdcxTIY3SLA43_qq7Z_zISlZUQ5-4powfzW-LmnPF8su4iqT2_FnYw-eEF15ms7GNAm26Sa_FEZZCldgF91FNl7lZzyR-9sc_W2O5dGx-4-YZRtLCjLFwwtyC3ij5z6WQq5UUPYo0UId6r6buxrX0hlXlqlJPQSmtcKyHe4u07hQc28PJ3BKH2kpM75TSfO4OZK9A3K1nwR1NqQU3BQ63lglvANLB7hJchi9owdf7ZiwxUsBkaEeQkNEGdeSd2kCKkKeZQ0sAHfTmzp11RpRSjG2InZC7Szyo_Ozuu7CuP6RbKDzT1Sars7MlUS-ic-INr1e_fXIv-GnVo5-vf2e8vtxuAQAA&msaoauth2=true&lc=1049"
+            },
+            {
+                "type": "image",
+                "src": "https://sun9-25.userapi.com/impg/onVpjMW-4f3ZZrN8WylCpwreoDQHqEJpu0hXgA/-MseRmaQx3c.jpg?size=300x374&quality=96&sign=7152ea471d028ebfdcbd242482d26154&type=album",
+                "alt": ""
+            },
+            {
+                "type": "paragraph",
+                "text": "5 —Переходим по этой ссылке для активации ключа: "
+            },
+            {
+                "type": "link",
+                "text": "https://redeem.microsoft.com/enter",
+                "href": "https://redeem.microsoft.com/enter"
+            },
+            {
+                "type": "image",
+                "src": "https://sun9-3.userapi.com/impg/wJZ3QXKiJpKGUq1Zx1qJfOy1RC7ZSdEhupNPjA/U3WRacw_fo4.jpg?size=300x366&quality=96&sign=10713120803ad4e7824d0a44256280d2&type=album",
+                "alt": ""
+            },
+            {
+                "type": "paragraph",
+                "text": "Активация ключей"
+            },
+            {
+                "type": "paragraph",
+                "text": "1- Скачиваете приложение VPN Planet для мобильного устройства.\nИли любую другую программу Vpn на ваш вкус"
+            },
+            {
+                "type": "paragraph",
+                "text": "2 — Запускаем программу с VPN и ставим страну которую вам сказали когда выдали ключ."
+            },
+            {
+                "type": "paragraph",
+                "text": "3 —Переходим на сайт"
+            },
+            {
+                "type": "link",
+                "text": "Microsoft",
+                "href": "https://vk.com/away.php?to=https%3A%2F%2Fredeem.microsoft.com%2Fenter%3Fref%3Dxboxcom&cc_key="
+            },
+            {
+                "type": "link",
+                "text": "https://redeem.microsoft.com/enter",
+                "href": "https://redeem.microsoft.com/enter"
+            },
+            {
+                "type": "paragraph",
+                "text": "4 — Выполняете вход в свою учетную запись"
+            },
+            {
+                "type": "link",
+                "text": "Microsoft.",
+                "href": "https://vk.com/away.php?to=https%3A%2F%2Fredeem.microsoft.com%2Fenter%3Fref%3Dxboxcom&cc_key="
+            },
+            {
+                "type": "image",
+                "src": "https://sun9-25.userapi.com/impg/onVpjMW-4f3ZZrN8WylCpwreoDQHqEJpu0hXgA/-MseRmaQx3c.jpg?size=300x374&quality=96&sign=7152ea471d028ebfdcbd242482d26154&type=album",
+                "alt": ""
+            },
+            {
+                "type": "paragraph",
+                "text": "5 —Переходим по этой ссылке для активации ключа: "
+            },
+            {
+                "type": "link",
+                "text": "https://redeem.microsoft.com/enter",
+                "href": "https://redeem.microsoft.com/enter"
+            },
+            {
+                "type": "image",
+                "src": "https://sun9-3.userapi.com/impg/wJZ3QXKiJpKGUq1Zx1qJfOy1RC7ZSdEhupNPjA/U3WRacw_fo4.jpg?size=300x366&quality=96&sign=10713120803ad4e7824d0a44256280d2&type=album",
+                "alt": ""
+            },
+            {
+                "type": "paragraph",
+                "text": "6 — В поле ввода прописываете полученный код. Готово!"
+            },
+            {
+                "type": "image",
+                "src": "https://sun9-35.userapi.com/impg/Cr_ztCuRfqPl4vM8Z-yN5NRGras4x2fHK6Uvcw/MJmRv-VAVuU.jpg?size=807x332&quality=96&sign=8f415ac21ffec8699063f81570997171&type=album",
+                "alt": ""
+            }
+        ]
     }
-
 ]

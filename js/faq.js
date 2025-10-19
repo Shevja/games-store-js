@@ -48,7 +48,7 @@ function openArticle(id) {
     faqPageElements.articleList.style.display = "none";
 
     faqPageElements.articleContainer.style.display = "block";
-    faqPageElements.articleContent.innerHTML = renderArticle(id);
+    faqPageElements.articleContent.appendChild(renderArticle(id));
 }
 
 function openArticleList() {
@@ -81,22 +81,46 @@ function renderArticle(id) {
                 el = document.createElement("p");
                 el.textContent = block.text;
                 break;
+            case "link":
+                el = document.createElement("a");
+                el.href = block.href;
+                el.textContent = block.text;
+                break;
             case "image":
                 el = document.createElement("div");
                 el.classList.add("image__container");
                 const img = document.createElement("img");
                 img.src = block.src;
                 img.alt = block.alt;
+                img.addEventListener('click',  () => openFullscreenImage(img.src))
                 el.appendChild(img);
+                break;
+            case "video":
+                el = document.createElement("div");
+                el.classList.add("video__container");
+                const videoIframe = document.createElement("iframe");
+                videoIframe.src = block.src;
+                videoIframe.width = block.width || "960";
+                videoIframe.frameBorder = "0";
+                videoIframe.allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                videoIframe.allowFullscreen = true;
+                el.appendChild(videoIframe);
                 break;
             default:
                 return;
         }
 
-        content.appendChild(el);
+        // Если обрабатываемый элемент - ссылка и последний добавленный элемент - текст
+        // то добавляем ссылку к тексту
+        if(el.tagName === "A" && content.lastChild && content.lastChild.tagName === "P") {
+            content.lastChild.append(" ");
+            content.lastChild.appendChild(el)
+        } else {
+            content.appendChild(el);
+        }
     })
 
-    return content.innerHTML;
+    return content;
 }
 
 init()
