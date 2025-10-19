@@ -2335,6 +2335,7 @@ main#productsContainer {
     font-width: 600;
     font-size: 18px;
     transition: background 0.2s;
+    border-radius: 4px;
 }
 
 .faq__list li button:active {
@@ -2354,6 +2355,28 @@ main#productsContainer {
     align-items: center;
     font-size: 16px;
     font-weight: 600;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+.article__next {
+    padding: 10px 20px;
+    background: var(--primary-800);
+    color: var(--text);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.article__next::after {
+    content: "→";
 }
 
 .article__content .image__container{
@@ -2400,7 +2423,8 @@ main#productsContainer {
         background: var(--accent-light);
         cursor: pointer;
     }
-    .article__back:hover {
+    .article__back:hover,
+    .article__next:hover {
         background: var(--accent-light);
         cursor: pointer;
     }

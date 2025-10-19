@@ -39,6 +39,7 @@ async function getArticles() {
         return await response.json()
     } catch (e) {
         console.error("Не удалось получить список статей: ", e);
+        faqPageElements.articleContent.appendChild("<p>Не удалось получить список статей</p>")
         return [];
     }
 }
@@ -48,6 +49,8 @@ function openArticle(id) {
     faqPageElements.articleList.style.display = "none";
 
     faqPageElements.articleContainer.style.display = "block";
+    faqPageElements.articleContent.innerHTML = '';
+
     faqPageElements.articleContent.appendChild(renderArticle(id));
 }
 
@@ -60,9 +63,14 @@ function openArticleList() {
 }
 
 function renderArticle(id) {
-    const article = faqArticles.find(article => article.id === id);
+    const article = faqArticles.find(article => Number(article.id) === Number(id));
+    const articleIdx = faqArticles.findIndex(article => Number(article.id) === Number(id));
 
-    if (!article) return '<p>Статья не найдена</p>'
+    if (!article) {
+        const errText = document.createElement("p")
+        errText.textContent = 'Статья не найдена';
+        return errText
+    }
     const content = document.createElement("div");
 
     article.content.forEach(block => {
@@ -119,6 +127,19 @@ function renderArticle(id) {
             content.appendChild(el);
         }
     })
+
+    const byeText = document.createElement("h3");
+    byeText.textContent = "Погрузиться бы во что нибудь с головой! Приятной игры! ©XboxRent";
+    byeText.align = "center";
+    content.appendChild(byeText);
+
+    const nextArticleIdx = articleIdx === faqArticles.length - 1 ? 0 : articleIdx + 1;
+    const nextArticleTitle = faqArticles[nextArticleIdx].title;
+    const nextArticleBtn = document.createElement("button");
+    nextArticleBtn.classList.add("article__next");
+    nextArticleBtn.addEventListener("click", () => openArticle(nextArticleIdx));
+    nextArticleBtn.textContent = nextArticleTitle;
+    content.appendChild(nextArticleBtn);
 
     return content;
 }
