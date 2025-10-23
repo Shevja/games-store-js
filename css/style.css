@@ -2294,7 +2294,7 @@ main#productsContainer {
 /* Уникальные стили для faq.html */
 
 .faq {
-    padding: 40px 0;
+    padding: 40px 0 60px;
 }
 
 .faq__container {
@@ -2310,10 +2310,6 @@ main#productsContainer {
 .faq-title__meta {
     font-size: 16px;
     color: var(--primary-300);
-}
-
-.faq__content {
-
 }
 
 .faq__list {
@@ -2418,6 +2414,52 @@ main#productsContainer {
     margin: 0 0 1rem 1.2rem;
 }
 
+.footer {
+    border-top: 1px solid var(--secondary-400);
+    background: var(--primary-800);
+}
+
+.footer-nav {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 40px 0;
+}
+
+.footer-nav__list {
+    display: flex;
+    list-style: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.footer-nav__list li a {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    color: var(--text);
+    text-decoration: none;
+    padding: 4px 16px 4px 6px;
+    border-radius: 20px;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+.footer-nav__list li a img {
+    width: 1.75rem;
+    object-fit: cover;
+}
+
+.footer__copyright {
+    padding: 3px 0;
+}
+
+.footer__copyright p {
+    font-size: 14px;
+    text-align: right;
+}
+
 @media (hover: hover) and (pointer: fine) {
     .faq__list li button:hover {
         background: var(--accent-light);
@@ -2431,6 +2473,11 @@ main#productsContainer {
 
     .article__content a:hover {
         color: var(--accent-light);
+    }
+
+    .footer-nav__list a:hover {
+        background: var(--text);
+        color: var(--primary-800);
     }
 }
 

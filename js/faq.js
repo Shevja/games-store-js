@@ -26,6 +26,18 @@ async function init() {
 
     faqArticleBackBtn.addEventListener("click", openArticleList);
     faqArticles.push(...articles);
+    window.addEventListener('hashchange', handleRouteChange)
+}
+
+function handleRouteChange() {
+    const hash = window.location.hash;
+
+    if (hash.startsWith("#article-")) {
+        const id = Number(hash.replace("#article-", ""));
+        openArticle(id);
+    } else {
+        openArticleList()
+    }
 }
 
 async function getArticles() {
@@ -45,6 +57,10 @@ async function getArticles() {
 }
 
 function openArticle(id) {
+    if (window.location.hash !== `#article-${id}`) {
+        window.location.hash = `#article-${id}`;
+    }
+
     faqPageElements.pageHeading.style.display = "none";
     faqPageElements.articleList.style.display = "none";
 
@@ -55,6 +71,10 @@ function openArticle(id) {
 }
 
 function openArticleList() {
+    if (window.location.hash) {
+        history.pushState("", document.title, window.location.pathname + window.location.search);
+    }
+
     faqPageElements.pageHeading.style.display = "";
     faqPageElements.articleList.style.display = "";
 
@@ -144,4 +164,4 @@ function renderArticle(id) {
     return content;
 }
 
-init()
+init().then(handleRouteChange)
